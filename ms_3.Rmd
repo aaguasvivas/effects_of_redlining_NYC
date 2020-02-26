@@ -1,0 +1,13 @@
+---
+title: "Milestone 3"
+author: "Adelson Aguasvivas"
+date: "February 26th, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(shiny)
+```
