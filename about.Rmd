@@ -10,4 +10,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(shiny)
+
+# Income inequality across ethnic groups in New York, compared to where people
+# live
+
+# Census data on income inequality, median income
+
 ```
