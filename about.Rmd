@@ -8,12 +8,13 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-library(tidyverse)
-library(shiny)
-
 # Income inequality across ethnic groups in New York, compared to where people
 # live
 
 # Census data on income inequality, median income
 
 ```
+
+# About
+
+For my final project, I want to focus on the history and effects of racism and discrimination, specifically through redlining. I will look at how redlining affected the geography of New York City, where I am from. I will be focusing on the five different boroughs (the Bronx, Queens, Manhattan, Brooklyn and Staten Island) and see how the city has been divided. I will use shapefile data from 1938-1940, to look at these divisions, which use different rankings to categorize geographical locations. These geographical locations were associated with race, with some of the "hazardous" zones often being those with the highest Black and Hispanic populations. I will be using census data to determine how those zones are still affected today, and what the change has been throughout the last 80 years. My expectation is that the zones that were redlined because of people of color will be some of the poorest places still today. I expect a lot of these areas to still have a high concentration of people of color. If not, I will look to see whether this change from being a city that was redlined, to now being more wealthy, is one of the results of gentrification. Right now, I have collected a lot of the map data through shapefiles, which I am not sure how to work with yet, and I am actively trying to learn about. I am using census data which we have worked with in class before. I am looking for other sorts of data that will help me prove my claim or give me some sort of guidance as to what kinds of observations I can make. 
