@@ -56,10 +56,24 @@ I used the following datasets:
 
 - Mapping Inequality Redlining in New Deal America Shapefiles. 
 [(here)](https://dsl.richmond.edu/panorama/redlining/#loc=6/37.484/-79.955&text=downloads)
+  - This dataset provides us with accurate visuals of what readlining was like
+  from 1937-1940, in the different parts of New York. We have access to several
+  different parts of New York, but I have decided to focus on the five boroughs,
+  not only because these are the places I am more familiar with being from New
+  York, but also because this is where some of the worst redlining in the
+  country happened about 80 years ago. I hope to explore this data and compare
+  it to recent census data, to see which patterns and observations are relevant
+  and important to discuss.
     
 - New York City Census Data: Demographic, Economic, and Location Data for 
 Census Tracts in NYC. 
 [(here)](https://www.kaggle.com/muonneutrino/new-york-city-census-data/data)
+  - This is the most recent census data I could find which provides huge amounts
+  of information, such as where the people live, income levels, education, rate
+  of poverty, income per capita, race, gender, among other things. I will use
+  this information and compare it to the redlining maps from 80 years ago to see
+  whuch patterns have developed because of redlining and how have people been
+  affected by it evem 80 years later.
 
 ```{r data-processing, include=FALSE}
 
@@ -73,18 +87,18 @@ NY_census_block_loc <-
   filter(county == "Queens" | county == "Bronx" | county == "New York")
 
 # Here, I process a more traditional census dataset/table with lots of
-# information
+# information, like race, location and income.
 
 NY_census_tracts <-
   read_csv("raw-data/new-york-city-census-data/nyc_census_tracts.csv", 
            col_names = TRUE) %>%
   clean_names()
 
-# Below I create a variable where I read in the shapefiles of each of the five
-# boroughs, then I use this variable along with ggplot to graph a map of the
-# boroughs. The next step would be to creative a comprehensive visual of housing
-# segregation in 1937-1940 versus what the low income parts are now using the
-# census data.
+# Below I create a variable where I read in and process the shapefiles of each
+# of the five boroughs, then I use this variable along with ggplot to graph a
+# map of the boroughs. The next step would be to creative a comprehensive visual
+# of housing segregation in 1937-1940 versus what the low income parts are now
+# using the census data.
 
 NY_Bronx_1938 <- 
   st_read("raw-data/NYBronx1938/cartodb-query.shp")
