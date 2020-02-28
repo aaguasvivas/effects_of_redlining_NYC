@@ -8,13 +8,128 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-# Income inequality across ethnic groups in New York, compared to where people
-# live
-
-# Census data on income inequality, median income
+library(tidyverse)
+library(janitor)
+library(sf)
+library(rgdal)
 
 ```
 
-# About
+# About Draft
 
-For my final project, I want to focus on the history and effects of racism and discrimination, specifically through redlining. I will look at how redlining affected the geography of New York City, where I am from. I will be focusing on the five different boroughs (the Bronx, Queens, Manhattan, Brooklyn and Staten Island) and see how the city has been divided. I will use shapefile data from 1938-1940, to look at these divisions, which use different rankings to categorize geographical locations. These geographical locations were associated with race, with some of the "hazardous" zones often being those with the highest Black and Hispanic populations. I will be using census data to determine how those zones are still affected today, and what the change has been throughout the last 80 years. My expectation is that the zones that were redlined because of people of color will be some of the poorest places still today. I expect a lot of these areas to still have a high concentration of people of color. If not, I will look to see whether this change from being a city that was redlined, to now being more wealthy, is one of the results of gentrification. Right now, I have collected a lot of the map data through shapefiles, which I am not sure how to work with yet, and I am actively trying to learn about. I am using census data which we have worked with in class before. I am looking for other sorts of data that will help me prove my claim or give me some sort of guidance as to what kinds of observations I can make. 
+#### [Access my Github repository here!](https://github.com/aaguasvivas/MS_3)
+
+For my final project, I want to focus on the history and effects of racism and
+discrimination, specifically through redlining. I will look at how redlining
+affected the geography of New York City, where I am from. I will be focusing on
+the five different boroughs (the Bronx, Queens, Manhattan, Brooklyn and Staten
+Island) and see how the city has been divided. I will use shapefile data from
+1937-1940, to look at these divisions, which use different rankings to
+categorize geographical locations. These geographical locations were associated
+with race, with some of the "hazardous" zones often being those with the highest
+Black and Hispanic populations. I will be using census data to determine how
+those zones are still affected today, and what the change has been throughout
+the last 80 years. My expectation is that the zones that were redlined because
+of people of color will be some of the poorest places still today. I expect a
+lot of these areas to still have a high concentration of people of color. If
+not, I will look to see whether this change from being a city that was redlined,
+to now being more wealthy, is one of the results of gentrification. Right now, I
+have collected a lot of the map data through shapefiles, which I am not sure how
+to work with yet, and I am actively trying to learn about. I am using census
+data which we have worked with in class before. I am looking for other sorts of
+data that will help me prove my claim or give me some sort of guidance as to
+what kinds of observations I can make.
+
+Right now, my plan is to examine this data and talk to my TF, Mitchell, to see
+what kinds of comparisons are useful when working with shapefile maps and census
+data. Something I am worried about and will keep working through is whether I am
+reading and processing this data correctly and whether I will be able to draw
+useful observations moving forward. As of right now, I will be using a lot of
+what I have mentioned here as part of my future About Page, as well as hopefully
+a lot of the data gathered into my raw-data subdirectory. I will be taking the 
+datacamp course that focuses on using sf, as well as a few other courses, 
+maybe around mapping.
+
+# Datasets Used & Links
+
+I used the following datasets:
+
+- Mapping Inequality Redlining in New Deal America Shapefiles. 
+[(here)](https://dsl.richmond.edu/panorama/redlining/#loc=6/37.484/-79.955&text=downloads)
+    
+- New York City Census Data: Demographic, Economic, and Location Data for 
+Census Tracts in NYC. 
+[(here)](https://www.kaggle.com/muonneutrino/new-york-city-census-data/data)
+
+```{r data-processing, include=FALSE}
+
+# Here I will load in and process the maps, as well as the census data.
+# First I start off my processing NYC location data.
+
+NY_census_block_loc <- 
+  read_csv("raw-data/new-york-city-census-data/census_block_loc.csv", 
+           col_names = TRUE) %>%
+  clean_names() %>%
+  filter(county == "Queens" | county == "Bronx" | county == "New York")
+
+# Here, I process a more traditional census dataset/table with lots of
+# information
+
+NY_census_tracts <-
+  read_csv("raw-data/new-york-city-census-data/nyc_census_tracts.csv", 
+           col_names = TRUE) %>%
+  clean_names()
+
+# Below I create a variable where I read in the shapefiles of each of the five
+# boroughs, then I use this variable along with ggplot to graph a map of the
+# boroughs. The next step would be to creative a comprehensive visual of housing
+# segregation in 1937-1940 versus what the low income parts are now using the
+# census data.
+
+NY_Bronx_1938 <- 
+  st_read("raw-data/NYBronx1938/cartodb-query.shp")
+
+Bronx_plot <-
+  ggplot() + 
+  geom_sf(data = NY_Bronx_1938) + 
+  ggtitle("Bronx") + 
+  coord_sf()
+
+NY_Brooklyn_1938 <- 
+  st_read("raw-data/NYBrooklyn1938/cartodb-query.shp")
+
+Brooklyn_plot <-
+  ggplot() + 
+  geom_sf(data = NY_Brooklyn_1938) + 
+  ggtitle("Brooklyn") + 
+  coord_sf()
+
+NY_Manhattan_1937 <- 
+  st_read("raw-data/NYManhattan1937/cartodb-query.shp")
+
+Manhattan_plot <-
+  ggplot() + 
+  geom_sf(data = NY_Manhattan_1937) + 
+  ggtitle("Manhattan") + 
+  coord_sf()
+
+NY_Queens_1938 <- 
+  st_read("raw-data/NYQueens1938/cartodb-query.shp")
+
+Queens_plot <-
+  ggplot() + 
+  geom_sf(data = NY_Queens_1938) + 
+  ggtitle("Queens") + 
+  coord_sf()
+
+NY_StatenIsland_1940 <- 
+  st_read("raw-data/NYStatenIsland1940/cartodb-query.shp")
+
+StatenIsland_plot <-
+  ggplot() + 
+  geom_sf(data = NY_Manhattan_1937) + 
+  ggtitle("Staten Island") + 
+  coord_sf()
+
+```
+
