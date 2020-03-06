@@ -1,7 +1,7 @@
 ---
-title: "Milestone 3"
+title: "Milestone 4"
 author: "Adelson Aguasvivas"
-date: "February 26th, 2020"
+date: "March 6th, 2020"
 output: html_document
 ---
 
@@ -17,7 +17,7 @@ library(rgdal)
 
 # About Draft
 
-#### [Access my Github repository here!](https://github.com/aaguasvivas/MS_3)
+#### [Access my Github repository here!](https://github.com/aaguasvivas/MS_4)
 
 For my final project, I want to focus on the history and effects of racism and
 discrimination, specifically through redlining. I will look at how redlining
