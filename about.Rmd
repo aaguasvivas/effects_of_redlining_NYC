@@ -78,6 +78,11 @@ Census Tracts in NYC.
   this information and compare it to the redlining maps from 80 years ago to see
   ouch patterns have developed because of redlining and how have people been
   affected by it even 80 years later.
+  
+- Tidycensus Library
+  - I used some of the techniques we have learned in class, like get_acs, to
+  plot the median income for the five boroughs in New York city in 2018, as well
+  as each of their racial geographies.
 
 ```{r data-processing, include=FALSE}
 
@@ -176,7 +181,10 @@ struggling with getting a median income graph that is more detailed, showing the
 differences between the different parts of the boroughs, so that we can see the
 income of the areas that are majority Black and Latinx versus the mostly White
 areas, as that way it would also be easier to compare it to the Redlining
-graphs. Below I display the median income in 2018, as well as the racial geography of the five boroughs, from 2014-2018.
+graphs. Below I display the median income in 2018, as well as the racial
+geography of the five boroughs, from 2014-2018, which I got using the tidycensus
+library. I hope to combine and display this data, alongside the redlining maps
+and more detailed income data, for which I have a table called NY_census_tracts.
 
 ```{r NY-median-income-2018-code, include=FALSE}
 
