@@ -12,6 +12,10 @@ library(tidyverse)
 library(janitor)
 library(sf)
 library(rgdal)
+library(tidycensus)
+library(scales)
+library(gt)
+library(gridExtra)
 
 ```
 
@@ -72,8 +76,8 @@ Census Tracts in NYC.
   of information, such as where the people live, income levels, education, rate
   of poverty, income per capita, race, gender, among other things. I will use
   this information and compare it to the redlining maps from 80 years ago to see
-  whuch patterns have developed because of redlining and how have people been
-  affected by it evem 80 years later.
+  ouch patterns have developed because of redlining and how have people been
+  affected by it even 80 years later.
 
 ```{r data-processing, include=FALSE}
 
@@ -84,7 +88,11 @@ NY_census_block_loc <-
   read_csv("raw-data/new-york-city-census-data/census_block_loc.csv", 
            col_names = TRUE) %>%
   clean_names() %>%
-  filter(county == "Queens" | county == "Bronx" | county == "New York")
+  filter(county == "Queens" | 
+           county == "Bronx" | 
+           county == "New York" | 
+           county == "Richmond" |
+           county == "Kings")
 
 # Here, I process a more traditional census dataset/table with lots of
 # information, like race, location and income.
@@ -149,4 +157,246 @@ StatenIsland_plot <-
 
 # Progress Update Since Milestone 3:
 
-To complete Milestone 4, I have started by duplicating my Milestone 3 repo, so that I can keep adding to it. I have included my raw data in the "raw-data" subdirectory, and will display some of the code and graphs I hope to be making below. I have included a description of the data I have collected and where it is located in the links above. I plan to compare maps and graphs of redlining from the years 1937 to 1940, comparing it to today, so that we can see the long term effects redlining, racism and discrimination have caused in New York City. I expect to see that most of the places where redlining occurred, are still either very poor, due to the government neglecting these areas, with Black and Latinx minorities making up most of the population, or are becoming gentrified in the case of some places in Brooklyn and elsewhere. I want to explore the impact these types of discriminatory policies have had on the lives of the residents, and how it has hurt them and caused their displacement.
+To complete Milestone 4, I have started by duplicating my Milestone 3 repo, so
+that I can keep adding to it. I have included my raw data in the "raw-data"
+subdirectory, and will display some of the code and graphs I hope to be making
+below. I have included a description of the data I have collected and where it
+is located in the links above. I plan to compare maps and graphs of redlining
+from the years 1937 to 1940, comparing it to today, so that we can see the long
+term effects redlining, racism and discrimination have caused in New York City.
+I expect to see that most of the places where redlining occurred, are still
+either very poor, due to the government neglecting these areas, with Black and
+Latinx minorities making up most of the population, or are becoming gentrified
+in the case of some places in Brooklyn and elsewhere. I want to explore the
+impact these types of discriminatory policies have had on the lives of the
+residents, and how it has hurt them and caused their displacement. Below, I try
+to display the median income for each of the five boroughs in 2018, in hopes of
+comparing it to race and the redlining from 1937-1940s. Right now, I am
+struggling with getting a median income graph that is more detailed, showing the
+differences between the different parts of the boroughs, so that we can see the
+income of the areas that are majority Black and Latinx versus the mostly White
+areas, as that way it would also be easier to compare it to the Redlining
+graphs. Below I display the median income in 2018, as well as the racial geography of the five boroughs, from 2014-2018.
+
+```{r NY-median-income-2018-code, include=FALSE}
+
+# Gathering New York Median Income Data from 2018 and plotting it
+
+NY_median_income <- get_acs(geography = "county", 
+                    variables = "B19013_001",
+                    state = "NY",
+                    year = 2018,
+                    geometry = TRUE)
+
+filter_5_boroughs <- NY_median_income %>%
+  filter(NAME == "Bronx County, New York" |
+           NAME == "New York County, New York" |
+           NAME == "Queens County, New York" |
+           NAME == "Richmond County, New York" |
+           NAME == "Kings County, New York")
+
+graph_median_income_5_boroughs <- filter_5_boroughs %>%
+  ggplot(aes(fill = estimate)) +
+  geom_sf() +
+  scale_fill_viridis_c(direction = -1, 
+                       option = "plasma", 
+                       labels = comma) +
+  labs(title = "Median Income by County in the 5 Boroughs of New York City",
+       caption = "Source: American Community Survey 2018",
+       fill = "Median Income") +
+  theme_void() 
+
+graph_median_income_5_boroughs
+
+```
+```{r graph-NY-median-income, echo=FALSE}
+
+# Plotting and displaying the median income data for the five boroughs
+
+graph_median_income_5_boroughs
+
+```
+
+```{r Bronx-race-graph, include=FALSE}
+
+# Graphing the racial geography of Bronx County, NY
+
+racevars <- c(White = "B02001_002", 
+              Black = "B02001_003", 
+              Asian = "B02001_005",
+              Hispanic = "B03003_003")
+
+Bronx_county <- get_acs(geography = "tract",
+                  variables = racevars, 
+                  year = 2018,
+                  state = "NY",
+                  county = "Bronx County",
+                  geometry = TRUE,
+                  summary_var = "B02001_001") 
+
+graph_Bronx_race <- Bronx_county %>%
+  mutate(Percent = 100 * (estimate / summary_est)) %>%
+  ggplot(aes(fill = Percent, color = Percent)) +
+  facet_wrap(~ variable) +
+  geom_sf() +
+  scale_fill_viridis_c(direction = -1) +
+  scale_color_viridis_c(direction = -1) +
+  labs(title = "Racial geography of Bronx County, New York",
+       caption = "Source: American Community Survey 2014-2018") +
+  theme_void()
+
+```
+```{r graph-Bronx-race, echo=FALSE}
+
+# Displaying the Bronx County Racial Geography graph
+
+graph_Bronx_race
+
+```
+
+```{r Brooklyn-race-graph, include=FALSE}
+
+# Graphing the racial geography of Kings County, NY
+
+racevars <- c(White = "B02001_002", 
+              Black = "B02001_003", 
+              Asian = "B02001_005",
+              Hispanic = "B03003_003")
+
+Brooklyn_county <- get_acs(geography = "tract",
+                  variables = racevars, 
+                  year = 2018,
+                  state = "NY",
+                  county = "Kings County",
+                  geometry = TRUE,
+                  summary_var = "B02001_001") 
+
+graph_Brooklyn_race <- Brooklyn_county %>%
+  mutate(Percent = 100 * (estimate / summary_est)) %>%
+  ggplot(aes(fill = Percent, color = Percent)) +
+  facet_wrap(~ variable) +
+  geom_sf() +
+  scale_fill_viridis_c(direction = -1) +
+  scale_color_viridis_c(direction = -1) +
+  labs(title = "Racial geography of Kings County, New York",
+       caption = "Source: American Community Survey 2014-2018") +
+  theme_void()
+
+```
+```{r graph-Brooklyn-race, echo=FALSE}
+
+# Displaying the racial geography for Kings County, NY
+
+graph_Brooklyn_race
+
+```
+
+```{r Queens-race-graph, include=FALSE}
+
+# Graphing the racial geography of Queens County, NY
+
+racevars <- c(White = "B02001_002", 
+              Black = "B02001_003", 
+              Asian = "B02001_005",
+              Hispanic = "B03003_003")
+
+Queens_county <- get_acs(geography = "tract",
+                  variables = racevars, 
+                  year = 2018,
+                  state = "NY",
+                  county = "Queens County",
+                  geometry = TRUE,
+                  summary_var = "B02001_001") 
+
+graph_Queens_race <- Queens_county %>%
+  mutate(Percent = 100 * (estimate / summary_est)) %>%
+  ggplot(aes(fill = Percent, color = Percent)) +
+  facet_wrap(~ variable) +
+  geom_sf() +
+  scale_fill_viridis_c(direction = -1) +
+  scale_color_viridis_c(direction = -1) +
+  labs(title = "Racial geography of Queens County, New York",
+       caption = "Source: American Community Survey 2014-2018") +
+  theme_void()
+
+```
+```{r graph-Queens-race, echo=FALSE}
+
+# Displaying the racial geography for Queens County, NY
+
+graph_Queens_race
+```
+
+```{r NY-county-race-graph, include=FALSE}
+
+# Graphing the racial geography of New York County, NY
+
+racevars <- c(White = "B02001_002", 
+              Black = "B02001_003", 
+              Asian = "B02001_005",
+              Hispanic = "B03003_003")
+
+NY_county <- get_acs(geography = "tract",
+                  variables = racevars, 
+                  year = 2018,
+                  state = "NY",
+                  county = "New York County",
+                  geometry = TRUE,
+                  summary_var = "B02001_001") 
+
+graph_NY_county_race <- NY_county %>%
+  mutate(Percent = 100 * (estimate / summary_est)) %>%
+  ggplot(aes(fill = Percent, color = Percent)) +
+  facet_wrap(~ variable) +
+  geom_sf() +
+  scale_fill_viridis_c(direction = -1) +
+  scale_color_viridis_c(direction = -1) +
+  labs(title = "Racial geography of New York County, New York",
+       caption = "Source: American Community Survey 2014-2018") +
+  theme_void()
+
+```
+```{r graph-NY-county-race, echo=FALSE}
+
+# Displaying the racial geography graph for New York county, NY
+
+graph_NY_county_race
+
+```
+
+```{r Staten-island-race-graph, include=FALSE}
+
+# Graphing the racial geography of Richmond County, NY
+
+racevars <- c(White = "B02001_002", 
+              Black = "B02001_003", 
+              Asian = "B02001_005",
+              Hispanic = "B03003_003")
+
+staten_island_county <- get_acs(geography = "tract",
+                  variables = racevars, 
+                  year = 2018,
+                  state = "NY",
+                  county = "Richmond County",
+                  geometry = TRUE,
+                  summary_var = "B02001_001") 
+
+graph_Staten_island_race <- staten_island_county %>%
+  mutate(Percent = 100 * (estimate / summary_est)) %>%
+  ggplot(aes(fill = Percent, color = Percent)) +
+  facet_wrap(~ variable) +
+  geom_sf() +
+  scale_fill_viridis_c(direction = -1) +
+  scale_color_viridis_c(direction = -1) +
+  labs(title = "Racial geography of Richmond County, New York",
+       caption = "Source: American Community Survey 2014-2018") +
+  theme_void()
+
+```
+```{r graph-staten-island-race, echo=FALSE}
+
+# Displaying racial geography of Richmond County, NY
+
+graph_Staten_island_race
+
+```
