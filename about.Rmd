@@ -1,5 +1,5 @@
 ---
-title: "Milestone 5"
+title: "Milestone 6"
 author: "Adelson Aguasvivas"
 date: "March 20th, 2020"
 output: html_document
@@ -19,6 +19,11 @@ library(gridExtra)
 library(lemon)
 library(rvest)
 library(magrittr)
+library(leaflet)
+library(gganimate)
+library(spdplyr)
+library(rmapshaper)
+
 
 ```
 
@@ -463,9 +468,10 @@ change_over_time_bronx <- table_bronx %>%
   pivot_longer(-year, names_to = "race", values_to = "population") %>%
   transform(population = as.numeric(gsub(",", "", population))) %>%
   mutate_if(is.numeric, ~replace(., is.na(.), 0)) %>%
-  ggplot(aes(x = year, y = population)) +
-  geom_point(aes(color = race), position = position_jitter(width = 0.3, 
-                                                           height = 0), 
+  ggplot(aes(x = year, y = population, color = race)) +
+  geom_line() +
+  geom_point(position = position_jitter(width = 0.3, 
+                                        height = 0), 
              alpha = 0.5) +
   labs(title = "Change in Demographics Over Time in the Bronx, New York",
        subtitle = "Data Webscrapped From Wikipedia. From 1910-2010.",
@@ -491,6 +497,102 @@ change_over_time_bronx
 ```
 
 
+# Progress Update Since Milestone 5:
+
+```{r ms-6, echo=FALSE}
+
+animated_change <- change_over_time_bronx +
+  transition_reveal(year) +
+  labs(title = "Change in Demographics Over Time in the Bronx. Year: {as.integer(frame_along)}")
+
+anim_save("bronx_change_animation.gif", path = "ms_6/", 
+          animation = animated_change)
+
+nycounties <- rgdal::readOGR("raw-data/NYManhattan1937/geojson/NYManhattan1937.geojson")
+
+# Look at levels of Home Owners’ Loan Corporation (HOLC) “Residential Security”
+# grades (D is red)
+
+nycounties$holc_grade
+
+## Create color factor palette which makes `A' green, 'B' blue, 'C' yellow
+
+factpal <- colorFactor(c("green","blue","yellow","red"), nycounties$holc_grade)
+
+# Map redlining in Manhattan
+# Plots holc_grade using factpal palette
+
+manhattan_redlining1937 <- leaflet(nycounties) %>%
+  addTiles() %>%
+  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+    fillColor = ~factpal(holc_grade))
+
+
+
+```
+```{r ny1950census, include=FALSE}
+
+# Import Census Tract Data as data.frame Consult
+# nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
+# B0F001 contains Median Income in 1949. Rename this MedianHHIncome for clarity.
+# Will need to figure out what the income variables are called for each new year
+# of data you download from the codebook that comes with each NHGIS download.
+# Select only MedianHHIncome and GISJOIN variables. GISJOIN is the variable that
+# allows you to join the census tract median income data with the shapefile
+# data. Also drop census tracts which reported 0 median income
+
+data1950 <- read.csv("raw-data//nhgis0013_csv/nhgis0013_ds82_1950_tract.csv")%>%
+  filter(STATE == "New York" & B0F001 > 0)%>%
+  mutate(MedianHHIncome1949 = B0F001)%>%
+  select(GISJOIN,MedianHHIncome1949)
+
+# Import Census Tract Shapefile into R as SpatialPolygonsDataFrameFormat (SP Dataframe)
+# dsn is location of folder which contains shapefiles, (.proj, .shp etc.)
+# layer is the filename of the .shp file inside the
+# folder dsn points to. 
+
+tracts1950 <-sf::st_read(dsn = "raw-data/nhgis0012_shape/nhgis0012_shapefile_tl2008_us_tract_1950",
+                         layer = "US_tract_1950_conflated")
+
+# *Select New York observations only using NHGISST variable NHGISST should be
+# consistent between census years, but you might need to double-check this if
+# you try 1960, 1970. *The NHGISST code is 360 for New York because New York's
+# FIPS code is 360. Google New York FIPS code for more information about the
+# FIPS system. *Need to have spdplyr package loaded to use tidyverse commands on
+# SpatialPolygonsDataFrame aka `filter' and 'mutate' *Join the data1950 data
+# with the MedianHHIncome variable by 'GISJOIN' so that the tract lines and
+# income data are in one object *Subset to Manhattan county, which has FIPS code
+# 061 *Can see other NY county fips codes at
+# https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
+
+tracts1950<-
+  tracts1950 %>% filter(NHGISST == "360" & COUNTY=="061")%>%
+  merge(data1950, "GISJOIN")
+
+
+# Set projection of tracts dataset to `projection` required by leaflet
+
+tracts1950<-sf::st_transform(tracts1950,  crs="+init=epsg:4326")
+
+# Condense size of data for faster processing
+
+tracts1950<-rmapshaper::ms_simplify(tracts1950)
+
+# Set palette color
+
+pal <- colorNumeric("viridis", NULL)
+
+#  Plot the data
+
+leaflet(tracts1950) %>%
+  addTiles() %>%
+  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+              fillColor = ~pal(MedianHHIncome1949)) %>%
+  addLegend(pal = pal, values = ~MedianHHIncome1949, opacity = 1.0)
+
+
+
+```
 
 
 
