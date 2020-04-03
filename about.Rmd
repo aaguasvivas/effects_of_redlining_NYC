@@ -499,7 +499,11 @@ change_over_time_bronx
 
 # Progress Update Since Milestone 5:
 
-```{r ms-6, echo=FALSE}
+**LINK TO THE REPO: https://github.com/aaguasvivas/MS_6**
+
+**LINK TO THE SHINY APP: https://adelson-aguasvivas.shinyapps.io/ms_6_change_over_time_bronx_animated/**
+
+```{r ms-6, include=FALSE}
 
 animated_change <- change_over_time_bronx +
   transition_reveal(year) +
