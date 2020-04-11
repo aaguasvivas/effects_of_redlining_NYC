@@ -1,2 +1,2 @@
-# Milestone 6
-You must have a working Shiny app, just to demonstrate that you can get something up and running. It can be a mess, but it should have at least one graphic with your data. Post the link to the shiny.io (Links to an external site.) website on canvas.
+# Effects of Redlining in New York City
+Final Project Repository for GOV1005: Data, in which I explore the effects of redlining in New York City during the mid-20th century, and how it affects household income and demographics today.
