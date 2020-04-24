@@ -1,7 +1,7 @@
 ---
 title: "Milestone 6"
 author: "Adelson Aguasvivas"
-date: "March 20th, 2020"
+date: "April 23rd, 2020"
 output: html_document
 ---
 
@@ -122,7 +122,7 @@ NY_census_tracts <-
 # using the census data.
 
 NY_Bronx_1938 <- 
-  st_read("raw-data/NYBronx1938/cartodb-query.shp")
+  sf::st_read("raw-data/NYBronx1938/cartodb-query.shp")
 
 Bronx_plot <-
   ggplot() + 
@@ -509,8 +509,8 @@ animated_change <- change_over_time_bronx +
   transition_reveal(year) +
   labs(title = "Change in Demographics Over Time in the Bronx. Year: {as.integer(frame_along)}")
 
-anim_save("bronx_change_animation.gif", path = "ms_6/", 
-          animation = animated_change)
+# anim_save("bronx_change_animation.gif", path = "ms_6/", 
+#          animation = animated_change)
 
 nycounties <- rgdal::readOGR("raw-data/NYManhattan1937/geojson/NYManhattan1937.geojson")
 
@@ -531,7 +531,7 @@ manhattan_redlining1937 <- leaflet(nycounties) %>%
   addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
     fillColor = ~factpal(holc_grade))
 
-
+manhattan_redlining1937
 
 ```
 ```{r ny1950census, include=FALSE}
@@ -555,7 +555,7 @@ data1950 <- read.csv("raw-data//nhgis0013_csv/nhgis0013_ds82_1950_tract.csv")%>%
 # layer is the filename of the .shp file inside the
 # folder dsn points to. 
 
-tracts1950 <-sf::st_read(dsn = "raw-data/nhgis0012_shape/nhgis0012_shapefile_tl2008_us_tract_1950",
+tracts1950 <- sf::st_read(dsn = "raw-data/nhgis0012_shape/nhgis0012_shapefile_tl2008_us_tract_1950",
                          layer = "US_tract_1950_conflated")
 
 # *Select New York observations only using NHGISST variable NHGISST should be
@@ -569,7 +569,7 @@ tracts1950 <-sf::st_read(dsn = "raw-data/nhgis0012_shape/nhgis0012_shapefile_tl2
 # 061 *Can see other NY county fips codes at
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
-tracts1950<-
+tracts1950 <-
   tracts1950 %>% filter(NHGISST == "360" & COUNTY=="061")%>%
   merge(data1950, "GISJOIN")
 
