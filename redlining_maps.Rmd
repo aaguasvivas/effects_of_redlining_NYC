@@ -1,0 +1,169 @@
+---
+title: "redlining_maps"
+author: "Adelson Aguasvivas"
+date: "4/25/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(janitor)
+library(sf)
+library(rgdal)
+library(tidycensus)
+library(scales)
+library(gt)
+library(gridExtra)
+library(lemon)
+library(rvest)
+library(magrittr)
+library(leaflet)
+library(gganimate)
+library(spdplyr)
+library(rmapshaper)
+
+
+
+```
+
+
+```{r manhattan-redlining, echo=FALSE}
+
+# anim_save("bronx_change_animation.gif", path = "ms_6/", 
+#          animation = animated_change)
+
+nymanhattan1937 <- rgdal::readOGR("raw-data/NYManhattan1937/geojson/NYManhattan1937.geojson")
+
+# Look at levels of Home Owners’ Loan Corporation (HOLC) “Residential Security”
+# grades (D is red)
+
+nymanhattan1937$holc_grade
+
+## Create color factor palette which makes `A' green, 'B' blue, 'C' yellow
+
+factpal <- colorFactor(c("green","blue","yellow","red"), nymanhattan1937$holc_grade)
+
+# Map redlining in Manhattan
+# Plots holc_grade using factpal palette
+
+write_rds(nymanhattan1937, "shiny/redlining_maps/manhattan/nymanhattan1937.rds")
+
+manhattan_redlining1937 <- leaflet(nymanhattan1937) %>%
+  addTiles() %>%
+  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+    fillColor = ~factpal(holc_grade))
+
+manhattan_redlining1937
+
+```
+
+```{r bronx-redlining, echo=FALSE}
+
+nybronx1938 <- rgdal::readOGR("raw-data/NYBronx1938/geojson/NYBronx1938.geojson")
+
+# Look at levels of Home Owners’ Loan Corporation (HOLC) “Residential Security”
+# grades (D is red)
+
+nybronx1938$holc_grade
+
+## Create color factor palette which makes `A' green, 'B' blue, 'C' yellow
+
+factpal <- colorFactor(c("green","blue","yellow","red", "orange"), nybronx1938$holc_grade)
+
+# Map redlining in Manhattan
+# Plots holc_grade using factpal palette
+
+write_rds(nybronx1938, "shiny/redlining_maps/bronx/nybronx1938.rds")
+
+bronx_redlining1938 <- leaflet(nybronx1938) %>%
+  addTiles() %>%
+  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+    fillColor = ~factpal(holc_grade))
+
+bronx_redlining1938
+
+```
+
+```{r brooklyn-redlining, echo=FALSE}
+
+nybrooklyn1938 <- rgdal::readOGR("raw-data/NYBrooklyn1938/geojson/NYBrooklyn1938.geojson")
+
+# Look at levels of Home Owners’ Loan Corporation (HOLC) “Residential Security”
+# grades (D is red)
+
+nybrooklyn1938$holc_grade
+
+## Create color factor palette which makes `A' green, 'B' blue, 'C' yellow
+
+factpal <- colorFactor(c("green","blue","yellow","red"), nybrooklyn1938$holc_grade)
+
+# Map redlining in Manhattan
+# Plots holc_grade using factpal palette
+
+write_rds(nybrooklyn1938, "shiny/redlining_maps/brooklyn/nybrooklyn1938.rds")
+
+brooklyn_redlining1938 <- leaflet(nybrooklyn1938) %>%
+  addTiles() %>%
+  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+    fillColor = ~factpal(holc_grade))
+
+brooklyn_redlining1938
+
+
+```
+
+```{r queens-redlining, echo=FALSE}
+
+nyqueens1938 <- rgdal::readOGR("raw-data/NYQueens1938/geojson/NYQueens1938.geojson")
+
+# Look at levels of Home Owners’ Loan Corporation (HOLC) “Residential Security”
+# grades (D is red)
+
+nyqueens1938$holc_grade
+
+## Create color factor palette which makes `A' green, 'B' blue, 'C' yellow
+
+factpal <- colorFactor(c("green","blue","yellow","red"), nyqueens1938$holc_grade)
+
+# Map redlining in Manhattan
+# Plots holc_grade using factpal palette
+
+write_rds(nyqueens1938, "shiny/redlining_maps/queens/nyqueens1938.rds")
+
+queens_redlining1938 <- leaflet(nyqueens1938) %>%
+  addTiles() %>%
+  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+    fillColor = ~factpal(holc_grade))
+
+queens_redlining1938
+
+```
+
+```{r statenisland-redlining, echo=FALSE}
+
+nystatenisland1940 <- rgdal::readOGR("raw-data/NYStatenIsland1940/geojson/NYStatenIsland1940.geojson")
+
+# Look at levels of Home Owners’ Loan Corporation (HOLC) “Residential Security”
+# grades (D is red)
+
+nystatenisland1940$holc_grade
+
+## Create color factor palette which makes `A' green, 'B' blue, 'C' yellow
+
+factpal <- colorFactor(c("green","blue","yellow","red"), nystatenisland1940$holc_grade)
+
+# Map redlining in Manhattan
+# Plots holc_grade using factpal palette
+
+write_rds(nystatenisland1940, "shiny/redlining_maps/statenisland/nystatenisland1940.rds")
+
+statenisland_redlining1940 <- leaflet(nystatenisland1940) %>%
+  addTiles() %>%
+  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+    fillColor = ~factpal(holc_grade))
+
+statenisland_redlining1940
+
+```

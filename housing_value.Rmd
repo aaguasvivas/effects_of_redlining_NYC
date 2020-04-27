@@ -1,0 +1,33 @@
+---
+title: "house_value"
+author: "Adelson Aguasvivas"
+date: "4/25/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(janitor)
+library(sf)
+library(rgdal)
+library(tidycensus)
+library(scales)
+library(gt)
+library(gridExtra)
+library(lemon)
+library(rvest)
+library(magrittr)
+library(leaflet)
+library(gganimate)
+library(spdplyr)
+library(rmapshaper)
+
+```
+
+```{r housing-data, include=FALSE}
+
+# Coming soon
+
+```
