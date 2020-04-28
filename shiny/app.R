@@ -27,6 +27,14 @@ manhattan_household_income_1990 <- read_rds("household_income/manhattan/1990/hou
 manhattan_household_income_2000 <- read_rds("household_income/manhattan/2000/household_income_2000.rds")
 manhattan_household_income_2010 <- read_rds("household_income/manhattan/2010/household_income_2010.rds")
 
+bronx_household_income_1950 <- read_rds("household_income/bronx/1950/household_income_1950.rds")
+bronx_household_income_1960 <- read_rds("household_income/bronx/1960/household_income_1960.rds")
+bronx_household_income_1970 <- read_rds("household_income/bronx/1970/household_income_1970.rds")
+bronx_household_income_1980 <- read_rds("household_income/bronx/1980/household_income_1980.rds")
+bronx_household_income_1990 <- read_rds("household_income/bronx/1990/household_income_1990.rds")
+bronx_household_income_2000 <- read_rds("household_income/bronx/2000/household_income_2000.rds")
+bronx_household_income_2010 <- read_rds("household_income/bronx/2010/household_income_2010.rds")
+
 
 # Define UI for application, we ask to display the image dist_plot as output.
 
@@ -96,7 +104,23 @@ tabPanel("Median Household Income",
                              h4("Median Household Income in Manhattan in 2000"),
                              leafletOutput("manhattan_household_income_2000"),
                              h4("Median Household Income in Manhattan in 2010"),
-                             leafletOutput("manhattan_household_income_2010"))
+                             leafletOutput("manhattan_household_income_2010")),
+                    tabPanel("Bronx", 
+                             h4("Median Household Income in The Bronx in 1950"),
+                             leafletOutput("bronx_household_income_1950"),
+                             h4("Median Household Income in The Bronx in 1960"),
+                             leafletOutput("bronx_household_income_1960"),
+                             h4("Median Household Income in The Bronx in 1970"),
+                             leafletOutput("bronx_household_income_1970"),
+                             h4("Median Household Income in The Bronx in 1980"),
+                             leafletOutput("bronx_household_income_1980"),
+                             h4("Median Household Income in The Bronx in 1990"),
+                             leafletOutput("bronx_household_income_1990"),
+                             h4("Median Household Income in The Bronx in 2000"),
+                             leafletOutput("bronx_household_income_2000"),
+                             h4("Median Household Income in The Bronx in 2010"),
+                             leafletOutput("bronx_household_income_2010"))
+                    
                 
 ))),
 
@@ -318,6 +342,79 @@ server <- function(input, output) {
             addLegend(pal = pal, values = ~MedianHHIncome2010, opacity = 1.0)
         
     }) 
+    
+    output$bronx_household_income_1950 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(bronx_household_income_1950) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(MedianHHIncome1949)) %>%
+            addLegend(pal = pal, values = ~MedianHHIncome1949, opacity = 1.0)
+        
+    }) 
+    
+    output$bronx_household_income_1960 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(bronx_household_income_1960) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(MedianIncome)) %>%
+            addLegend(pal = pal, values = ~MedianIncome, opacity = 1.0)
+        
+    }) 
+    
+    output$bronx_household_income_1970 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(bronx_household_income_1970) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(MedianIncome)) %>%
+            addLegend(pal = pal, values = ~MedianIncome, opacity = 1.0)
+        
+        
+    }) 
+    
+    output$bronx_household_income_1980 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(bronx_household_income_1980) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(MedianHHIncome1979)) %>%
+            addLegend(pal = pal, values = ~MedianHHIncome1979, opacity = 1.0)
+        
+    }) 
+    
+    output$bronx_household_income_1990 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(bronx_household_income_1990) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(MedianHHIncome1989)) %>%
+            addLegend(pal = pal, values = ~MedianHHIncome1989, opacity = 1.0)
+        
+    }) 
+    
+    output$bronx_household_income_2000 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(bronx_household_income_2000) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(MedianHHIncome1999)) %>%
+            addLegend(pal = pal, values = ~MedianHHIncome1999, opacity = 1.0)
+        
+        
+    }) 
+    
+    output$bronx_household_income_2010 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(bronx_household_income_2010) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(MedianHHIncome2010)) %>%
+            addLegend(pal = pal, values = ~MedianHHIncome2010, opacity = 1.0)
+        
+        
+    })
     
 }
 
