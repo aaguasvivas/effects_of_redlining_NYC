@@ -35,6 +35,10 @@ bronx_household_income_1990 <- read_rds("household_income/bronx/1990/household_i
 bronx_household_income_2000 <- read_rds("household_income/bronx/2000/household_income_2000.rds")
 bronx_household_income_2010 <- read_rds("household_income/bronx/2010/household_income_2010.rds")
 
+manhattan_housing_value_1980 <- read_rds("housing_value/manhattan/1980/housing_value_1980.rds")
+manhattan_housing_value_1990 <- read_rds("housing_value/manhattan/1990/housing_value_1990.rds")
+
+
 
 # Define UI for application, we ask to display the image dist_plot as output.
 
@@ -126,9 +130,18 @@ tabPanel("Median Household Income",
 
 
 
-tabPanel("Housing Value"
+tabPanel("Housing Value",
+         column(7,
+                tabsetPanel(
+                    tabPanel("Manhattan",
+                             h4("Median Housing Value in Manhattan in 1980"),
+                             leafletOutput("manhattan_housing_value_1980"),
+                             h4("Median Housing Value in Manhattan in 1990"),
+                             leafletOutput("manhattan_housing_value_1990"))
+                             
          
-),
+         
+))),
 
 
 tabPanel("Predictions and Findings"
@@ -412,6 +425,28 @@ server <- function(input, output) {
             addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
                         fillColor = ~pal(MedianHHIncome2010)) %>%
             addLegend(pal = pal, values = ~MedianHHIncome2010, opacity = 1.0)
+        
+        
+    })
+    
+    output$manhattan_housing_value_1980 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(manhattan_housing_value_1980) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(HousingValue1980)) %>%
+            addLegend(pal = pal, values = ~HousingValue1980, opacity = 1.0)
+        
+        
+    })
+    
+    output$manhattan_housing_value_1990 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(manhattan_housing_value_1990) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(HousingValue1990)) %>%
+            addLegend(pal = pal, values = ~HousingValue1990, opacity = 1.0)
         
         
     })

@@ -95,3 +95,140 @@ leaflet(tracts1950) %>%
 
 
 ```
+
+```{r manhattan-housing-value-1980, include=FALSE}
+
+# Coming soon
+
+# Import Census Tract Data as data.frame Consult
+# nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
+# B0F001 contains Median Income in 1949. Rename this MedianHHIncome for clarity.
+# Will need to figure out what the income variables are called for each new year
+# of data you download from the codebook that comes with each NHGIS download.
+# Select only MedianHHIncome and GISJOIN variables. GISJOIN is the variable that
+# allows you to join the census tract median income data with the shapefile
+# data. Also drop census tracts which reported 0 median income
+
+data1980 <- read.csv("raw-data/housingdata/1980/nhgis0017_csv/nhgis0017_ds104_1980_tract.csv")%>%
+  filter(STATE == "New York" & C8J001 > 0)%>%
+  mutate(HousingValue1980 = C8J001)%>%
+  select(GISJOIN, HousingValue1980)
+
+# Import Census Tract Shapefile into R as SpatialPolygonsDataFrameFormat (SP Dataframe)
+# dsn is location of folder which contains shapefiles, (.proj, .shp etc.)
+# layer is the filename of the .shp file inside the
+# folder dsn points to. 
+
+tracts1980 <- sf::st_read(dsn = "raw-data/housingdata/1980/nhgis0017_shape/nhgis0017_shapefile_tl2008_us_tract_1980/",
+                         layer = "US_tract_1980_conflated")
+
+# *Select New York observations only using NHGISST variable NHGISST should be
+# consistent between census years, but you might need to double-check this if
+# you try 1960, 1970. *The NHGISST code is 360 for New York because New York's
+# FIPS code is 360. Google New York FIPS code for more information about the
+# FIPS system. *Need to have spdplyr package loaded to use tidyverse commands on
+# SpatialPolygonsDataFrame aka `filter' and 'mutate' *Join the data1950 data
+# with the MedianHHIncome variable by 'GISJOIN' so that the tract lines and
+# income data are in one object *Subset to Manhattan county, which has FIPS code
+# 061 *Can see other NY county fips codes at
+# https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
+
+tracts1980 <-
+  tracts1980 %>% filter(NHGISST == "360" & COUNTY=="061") %>%
+  merge(data1980, "GISJOIN")
+
+
+# Set projection of tracts dataset to `projection` required by leaflet
+
+tracts1980 <- sf::st_transform(tracts1980,  crs="+init=epsg:4326")
+
+# Condense size of data for faster processing
+
+tracts1980 <- rmapshaper::ms_simplify(tracts1980)
+
+write_rds(tracts1980, "shiny/housing_value/manhattan/1980/housing_value_1980.rds")
+
+
+# Set palette color
+
+pal <- colorNumeric("viridis", NULL)
+
+#  Plot the data
+
+leaflet(tracts1980) %>%
+  addTiles() %>%
+  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+              fillColor = ~pal(HousingValue1980)) %>%
+  addLegend(pal = pal, values = ~HousingValue1980, opacity = 1.0)
+
+```
+
+```{r manhattan-housing-value-1990, include=FALSE}
+
+# Coming soon
+
+# Import Census Tract Data as data.frame Consult
+# nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
+# B0F001 contains Median Income in 1949. Rename this MedianHHIncome for clarity.
+# Will need to figure out what the income variables are called for each new year
+# of data you download from the codebook that comes with each NHGIS download.
+# Select only MedianHHIncome and GISJOIN variables. GISJOIN is the variable that
+# allows you to join the census tract median income data with the shapefile
+# data. Also drop census tracts which reported 0 median income
+
+data1990 <- read.csv("raw-data/housingdata/1990/nhgis0018_csv/nhgis0018_ds120_1990_tract.csv")%>%
+  filter(STATE == "New York" & EST001 > 0)%>%
+  mutate(HousingValue1990 = EST001)%>%
+  select(GISJOIN, HousingValue1990)
+
+# Import Census Tract Shapefile into R as SpatialPolygonsDataFrameFormat (SP Dataframe)
+# dsn is location of folder which contains shapefiles, (.proj, .shp etc.)
+# layer is the filename of the .shp file inside the
+# folder dsn points to. 
+
+tracts1990 <- sf::st_read(dsn = "raw-data/housingdata/1990/nhgis0018_shape/nhgis0018_shapefile_tl2008_us_tract_1990/",
+                         layer = "US_tract_1990_conflated")
+
+# *Select New York observations only using NHGISST variable NHGISST should be
+# consistent between census years, but you might need to double-check this if
+# you try 1960, 1970. *The NHGISST code is 360 for New York because New York's
+# FIPS code is 360. Google New York FIPS code for more information about the
+# FIPS system. *Need to have spdplyr package loaded to use tidyverse commands on
+# SpatialPolygonsDataFrame aka `filter' and 'mutate' *Join the data1950 data
+# with the MedianHHIncome variable by 'GISJOIN' so that the tract lines and
+# income data are in one object *Subset to Manhattan county, which has FIPS code
+# 061 *Can see other NY county fips codes at
+# https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
+
+tracts1990 <-
+  tracts1990 %>% filter(NHGISST == "360" & COUNTY=="061") %>%
+  merge(data1990, "GISJOIN")
+
+
+# Set projection of tracts dataset to `projection` required by leaflet
+
+tracts1990 <- sf::st_transform(tracts1990,  crs="+init=epsg:4326")
+
+# Condense size of data for faster processing
+
+tracts1990 <- rmapshaper::ms_simplify(tracts1990)
+
+write_rds(tracts1990, "shiny/housing_value/manhattan/1990/housing_value_1990.rds")
+
+
+# Set palette color
+
+pal <- colorNumeric("viridis", NULL)
+
+#  Plot the data
+
+leaflet(tracts1990) %>%
+  addTiles() %>%
+  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+              fillColor = ~pal(HousingValue1990)) %>%
+  addLegend(pal = pal, values = ~HousingValue1990, opacity = 1.0)
+
+
+```
+
+
