@@ -20,6 +20,13 @@ nyqueens1938 <- read_rds("redlining_maps/queens/nyqueens1938.rds")
 nystatenisland1940 <- read_rds("redlining_maps/statenisland/nystatenisland1940.rds")
 
 manhattan_household_income_1950 <- read_rds("household_income/manhattan/1950/household_income_1950.rds")
+manhattan_household_income_1960 <- read_rds("household_income/manhattan/1960/household_income_1960.rds")
+manhattan_household_income_1970 <- read_rds("household_income/manhattan/1970/household_income_1970.rds")
+manhattan_household_income_1980 <- read_rds("household_income/manhattan/1980/household_income_1980.rds")
+manhattan_household_income_1990 <- read_rds("household_income/manhattan/1990/household_income_1990.rds")
+manhattan_household_income_2000 <- read_rds("household_income/manhattan/2000/household_income_2000.rds")
+manhattan_household_income_2010 <- read_rds("household_income/manhattan/2010/household_income_2010.rds")
+
 
 # Define UI for application, we ask to display the image dist_plot as output.
 
@@ -27,45 +34,71 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
     navbarPage("Effects of Redlining in NYC", 
               
 tabPanel("Redlining Maps",
-        column(7,
-        h4("Redlining in Manhattan 1937"),
-        leafletOutput("nymanhattan1937"),
-        br(),
-        h4("Redlining in Bronx 1938"),
-        leafletOutput("nybronx1938"),
-        br(),
-        h4("Redlining in Brooklyn 1938"),
-        leafletOutput("nybrooklyn1938"),
-        br(),
-        h4("Redlining in Queens 1938"),
-        leafletOutput("nyqueens1938"),
-        br(),
-        h4("Redlining in Staten Island 1940"),
-        leafletOutput("nystatenisland1940")
+         column(7,
+           tabsetPanel(
+               tabPanel("Manhattan", 
+                        h4("Redlining in Manhattan 1937"),
+                        br(),
+                        leafletOutput("nymanhattan1937"),
+                        br(),
+                        h5("Writing coming soon")),
+               tabPanel("Bronx", 
+                        h4("Redlining in Bronx 1938"),
+                        br(),
+                        leafletOutput("nybronx1938"),
+                        br(),
+                        h5("Writing coming soon")),
+               tabPanel("Brooklyn", 
+                        h4("Redlining in Brooklyn 1938"),
+                        br(),
+                        leafletOutput("nybrooklyn1938"),
+                        br(),
+                        h5("Writing coming soon")),
+               tabPanel("Queens", 
+                        h4("Redlining in Queens 1938"),
+                        br(),
+                        leafletOutput("nyqueens1938"),
+                        br(),
+                        h5("Writing coming soon")),
+               tabPanel("Staten Island", 
+                        h4("Redlining in Staten Island 1940"),
+                        br(),
+                        leafletOutput("nystatenisland1940"),
+                        br(),
+                        h5("Writing coming soon")))
 )),
 
 
-
 tabPanel("Change in Demographics Over Time",
-        h4("Change in Demographics"),
-        imageOutput("bronx_change_animation"),
-        br(),
-        br(),
-        br(),
-        imageOutput("manhattan_change_animation"),
-        br(),
-        br(),
-        br(),
-        imageOutput("brooklyn_change_animation")
+         tabsetPanel(
+             tabPanel("Manhattan", imageOutput("manhattan_change_animation")),
+             tabPanel("Bronx", imageOutput("bronx_change_animation")),
+             tabPanel("Brooklyn", imageOutput("brooklyn_change_animation")),
+             tabPanel("Queens", imageOutput("queens_change_animation")),
+             tabPanel("Staten Island", imageOutput("staten_island_change_animation")))
 
 ),
 
 tabPanel("Median Household Income",
          column(7,
-                h4("Median Household Income in Manhattan in 1950"),
-                leafletOutput("manhattan_household_income_1950")
-         
-)),
+                tabsetPanel(
+                    tabPanel("Manhattan", 
+                             h4("Median Household Income in Manhattan in 1950"),
+                             leafletOutput("manhattan_household_income_1950"),
+                             h4("Median Household Income in Manhattan in 1960"),
+                             leafletOutput("manhattan_household_income_1960"),
+                             h4("Median Household Income in Manhattan in 1970"),
+                             leafletOutput("manhattan_household_income_1970"),
+                             h4("Median Household Income in Manhattan in 1980"),
+                             leafletOutput("manhattan_household_income_1980"),
+                             h4("Median Household Income in Manhattan in 1990"),
+                             leafletOutput("manhattan_household_income_1990"),
+                             h4("Median Household Income in Manhattan in 2000"),
+                             leafletOutput("manhattan_household_income_2000"),
+                             h4("Median Household Income in Manhattan in 2010"),
+                             leafletOutput("manhattan_household_income_2010"))
+                
+))),
 
 
 
@@ -139,6 +172,30 @@ server <- function(input, output) {
         
     }, deleteFile = FALSE)
     
+    output$queens_change_animation <- renderImage({
+        
+        queens_change_over_time <- normalizePath(file.path('change_over_time_graphs/queens_change_animation.gif'))
+        
+        # Return a list containing the filename, width and height
+        
+        list(src = queens_change_over_time,
+             width = 700,
+             height = 600)
+        
+    }, deleteFile = FALSE)
+    
+    output$staten_island_change_animation <- renderImage({
+        
+        staten_island_change_over_time <- normalizePath(file.path('change_over_time_graphs/staten_island_change_animation.gif'))
+        
+        # Return a list containing the filename, width and height
+        
+        list(src = staten_island_change_over_time,
+             width = 700,
+             height = 600)
+        
+    }, deleteFile = FALSE)
+    
     output$nymanhattan1937 <- renderLeaflet({
         factpal <- colorFactor(c("green","blue","yellow","red"), nymanhattan1937$holc_grade)
         leaflet(nymanhattan1937) %>%
@@ -201,6 +258,67 @@ server <- function(input, output) {
             addLegend(pal = pal, values = ~MedianHHIncome1949, opacity = 1.0)
         
     })
+    
+    output$manhattan_household_income_1960 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(manhattan_household_income_1960) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(MedianIncome)) %>%
+            addLegend(pal = pal, values = ~MedianIncome, opacity = 1.0)
+        
+    }) 
+    
+    output$manhattan_household_income_1970 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(manhattan_household_income_1970) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(MedianIncome)) %>%
+            addLegend(pal = pal, values = ~MedianIncome, opacity = 1.0)
+        
+    }) 
+    
+    output$manhattan_household_income_1980 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(manhattan_household_income_1980) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(MedianHHIncome1979)) %>%
+            addLegend(pal = pal, values = ~MedianHHIncome1979, opacity = 1.0)
+        
+    }) 
+    
+    output$manhattan_household_income_1990 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(manhattan_household_income_1990) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(MedianHHIncome1989)) %>%
+            addLegend(pal = pal, values = ~MedianHHIncome1989, opacity = 1.0)
+        
+    }) 
+    
+    output$manhattan_household_income_2000 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(manhattan_household_income_2000) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(MedianHHIncome1999)) %>%
+            addLegend(pal = pal, values = ~MedianHHIncome1999, opacity = 1.0)
+        
+    }) 
+    
+    output$manhattan_household_income_2010 <- renderLeaflet({
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(manhattan_household_income_2010) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(MedianHHIncome2010)) %>%
+            addLegend(pal = pal, values = ~MedianHHIncome2010, opacity = 1.0)
+        
+    }) 
+    
 }
 
 # Run the application 

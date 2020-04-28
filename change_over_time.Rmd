@@ -10,21 +10,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(janitor)
-library(sf)
-library(rgdal)
-library(tidycensus)
-library(scales)
-library(gt)
-library(gridExtra)
-library(lemon)
+library(gganimate)
 library(rvest)
 library(magrittr)
-library(leaflet)
-library(gganimate)
-library(spdplyr)
-library(rmapshaper)
-
-
 
 ```
 
@@ -54,9 +42,9 @@ library(rmapshaper)
 
 options(scipen=5)
 
-website = 'https://en.wikipedia.org/wiki/Demographic_history_of_New_York_City#The_Bronx'
+bronx_website = 'https://en.wikipedia.org/wiki/Demographic_history_of_New_York_City#The_Bronx'
 
-table_bronx <- website %>%
+table_bronx <- bronx_website %>%
   read_html() %>%
   html_node(xpath = '//*[@id="mw-content-text"]/div/table[2]') %>%
   html_table(fill = TRUE) %>%
@@ -98,13 +86,13 @@ bronx_animated_change <- change_over_time_bronx +
 
 ```
 
-```{r manhattan-change-over-time}
+```{r manhattan-change-over-time, include=FALSE}
 
 options(scipen=5)
 
 manhattan_website = 'https://en.wikipedia.org/wiki/Demographic_history_of_New_York_City#Manhattan'
 
-table_manhattan <- website %>%
+table_manhattan <- manhattan_website %>%
   read_html() %>%
   html_node(xpath = '//*[@id="mw-content-text"]/div/table[4]') %>%
   html_table(fill = TRUE) %>%
@@ -149,13 +137,13 @@ manhattan_animated_change <- change_over_time_manhattan +
 
 ```
 
-```{r brooklyn-change-over-time}
+```{r brooklyn-change-over-time, include=FALSE}
 
 options(scipen=5)
 
 brooklyn_website = 'https://en.wikipedia.org/wiki/Demographic_history_of_New_York_City#Brooklyn'
 
-table_brooklyn <- website %>%
+table_brooklyn <- brooklyn_website %>%
   read_html() %>%
   html_node(xpath = '//*[@id="mw-content-text"]/div/table[3]') %>%
   html_table(fill = TRUE) %>%
@@ -200,3 +188,105 @@ brooklyn_animated_change <- change_over_time_brooklyn +
 #          animation = brooklyn_animated_change)
 
 ```
+
+```{r queens-change-over-time, include=FALSE}
+
+options(scipen=5)
+
+queens_website = 'https://en.wikipedia.org/wiki/Demographic_history_of_New_York_City#Queens'
+
+table_queens <- queens_website %>%
+  read_html() %>%
+  html_node(xpath = '//*[@id="mw-content-text"]/div/table[5]') %>%
+  html_table(fill = TRUE) %>%
+  clean_names()
+  
+change_over_time_queens <- table_queens %>%
+  select(year, white_includes_white_hispanics, 
+         black, asian, hispanic_latino, foreignborn) %>%
+  pivot_longer(-year, names_to = "race", values_to = "population") %>%
+  transform(population = as.numeric(gsub(",", "", population))) %>%
+  mutate_if(is.numeric, ~replace(., is.na(.), 0)) %>%
+  ggplot(aes(x = year, y = population, color = race)) +
+  geom_line() +
+  geom_point(position = position_jitter(width = 0.3, 
+                                        height = 0), 
+             alpha = 0.5) +
+  labs(title = "Change in Demographics Over Time in Queens, New York",
+       subtitle = "Data Webscrapped From Wikipedia. From 1910-2010.",
+       x = "Year",
+       y = "Population") +
+  theme_classic() +
+  scale_color_discrete(name = "Race/Census Categories",
+                            labels = c("Asian", "Black", "Foreign Born", 
+                                       "Hispanic or Latino", "White")) +
+  scale_x_continuous(breaks = c(1910, 1920, 1930, 1940, 1950, 
+                                1960, 1970, 1980, 1990, 2000, 2010)) +
+  scale_y_continuous(breaks = c(0, 250000, 500000, 750000, 1000000, 1250000,
+                                1500000, 1750000, 2000000),
+                     labels = c("0", "250,000", "500,000", "750,000",
+                                "1,000,000", "1,250,000", "1,500,000",
+                                "1,750,000", "2,000,000"))
+
+change_over_time_queens
+
+queens_animated_change <- change_over_time_queens +
+  transition_reveal(year) +
+  labs(title = "Change in Demographics Over Time in Queens. Year: {as.integer(frame_along)}")
+
+# anim_save("queens_change_animation.gif", path = "shiny/change_over_time_graphs/", 
+#         animation = queens_animated_change)
+
+
+```
+
+```{r staten_island_change_over_time, include=FALSE}
+
+options(scipen=5)
+
+staten_island_website = 'https://en.wikipedia.org/wiki/Demographic_history_of_New_York_City#Staten_Island'
+
+table_staten_island <- staten_island_website %>%
+  read_html() %>%
+  html_node(xpath = '//*[@id="mw-content-text"]/div/table[6]') %>%
+  html_table(fill = TRUE) %>%
+  clean_names()
+  
+change_over_time_staten_island <- table_staten_island %>%
+  select(year, white_includes_white_hispanics, 
+         black, asian, hispanic_latino, foreignborn) %>%
+  pivot_longer(-year, names_to = "race", values_to = "population") %>%
+  transform(population = as.numeric(gsub(",", "", population))) %>%
+  mutate_if(is.numeric, ~replace(., is.na(.), 0)) %>%
+  ggplot(aes(x = year, y = population, color = race)) +
+  geom_line() +
+  geom_point(position = position_jitter(width = 0.3, 
+                                        height = 0), 
+             alpha = 0.5) +
+  labs(title = "Change in Demographics Over Time in Staten Island, New York",
+       subtitle = "Data Webscrapped From Wikipedia. From 1910-2010.",
+       x = "Year",
+       y = "Population") +
+  theme_classic() +
+  scale_color_discrete(name = "Race/Census Categories",
+                            labels = c("Asian", "Black", "Foreign Born", 
+                                       "Hispanic or Latino", "White")) +
+  scale_x_continuous(breaks = c(1910, 1920, 1930, 1940, 1950, 
+                                1960, 1970, 1980, 1990, 2000, 2010)) +
+  scale_y_continuous(breaks = c(0, 50000, 100000, 150000, 200000, 250000, 
+                                300000, 350000, 400000),
+                     labels = c("0", "50,000", "100,000", "150,000", "200,000", 
+                                 "250,000", "300,000", "350,000", "400,000"))
+
+change_over_time_staten_island
+
+staten_island_animated_change <- change_over_time_staten_island +
+  transition_reveal(year) +
+  labs(title = "Change in Demographics Over Time in Staten Island. Year: {as.integer(frame_along)}")
+
+# anim_save("staten_island_change_animation.gif", path = "shiny/change_over_time_graphs/", 
+#         animation = staten_island_animated_change)
+
+```
+
+
