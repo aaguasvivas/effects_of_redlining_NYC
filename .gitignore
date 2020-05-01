@@ -5,3 +5,4 @@
 *.Rproj
 rsconnect
 .DS_Store
+.Rhistory 2

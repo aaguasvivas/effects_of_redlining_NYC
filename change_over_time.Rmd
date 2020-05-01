@@ -13,6 +13,7 @@ library(janitor)
 library(gganimate)
 library(rvest)
 library(magrittr)
+library(plotly)
 
 ```
 
@@ -57,7 +58,7 @@ change_over_time_bronx <- table_bronx %>%
   transform(population = as.numeric(gsub(",", "", population))) %>%
   mutate_if(is.numeric, ~replace(., is.na(.), 0)) %>%
   ggplot(aes(x = year, y = population, color = race)) +
-  geom_line() +
+  geom_line(aes(frame = year)) +
   geom_point(position = position_jitter(width = 0.3, 
                                         height = 0), 
              alpha = 0.5) +
@@ -75,7 +76,8 @@ change_over_time_bronx <- table_bronx %>%
                      labels = c("0", "250,000", "500,000", "750,000",
                                 "1,000,000", "1,250,000"))
 
-change_over_time_bronx
+# ggplotly(change_over_time_bronx) %>%
+#  animation_opts(frame = ~year)
 
 bronx_animated_change <- change_over_time_bronx +
   transition_reveal(year) +

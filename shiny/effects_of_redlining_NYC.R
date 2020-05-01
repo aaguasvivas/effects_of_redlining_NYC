@@ -92,23 +92,17 @@ tabPanel("Change in Demographics Over Time",
 ),
 
 tabPanel("Median Household Income",
+         sidebarPanel(
+             sliderInput("year", "Year:",  
+                         min = 1950, max = 2010, value = 1950, 
+                         step = 10, sep = "", animate = TRUE)
+         ),
          column(7,
                 tabsetPanel(
+                    
                     tabPanel("Manhattan", 
-                             h4("Median Household Income in Manhattan in 1950"),
-                             leafletOutput("manhattan_household_income_1950"),
-                             h4("Median Household Income in Manhattan in 1960"),
-                             leafletOutput("manhattan_household_income_1960"),
-                             h4("Median Household Income in Manhattan in 1970"),
-                             leafletOutput("manhattan_household_income_1970"),
-                             h4("Median Household Income in Manhattan in 1980"),
-                             leafletOutput("manhattan_household_income_1980"),
-                             h4("Median Household Income in Manhattan in 1990"),
-                             leafletOutput("manhattan_household_income_1990"),
-                             h4("Median Household Income in Manhattan in 2000"),
-                             leafletOutput("manhattan_household_income_2000"),
-                             h4("Median Household Income in Manhattan in 2010"),
-                             leafletOutput("manhattan_household_income_2010")),
+                             h4("Median Household Income in Manhattan in "),
+                             leafletOutput("manhattan_household_income_1950")),
                     tabPanel("Bronx", 
                              h4("Median Household Income in The Bronx in 1950"),
                              leafletOutput("bronx_household_income_1950"),
@@ -287,12 +281,33 @@ server <- function(input, output) {
     })
     
     output$manhattan_household_income_1950 <- renderLeaflet({
+        if(input$year == 1950) {
+            y = manhattan_household_income_1950$MedianHHIncome1949
+        }
+        if(input$year == 1960) {
+            y = manhattan_household_income_1960$MedianIncome1960
+        }
+        if(input$year == 1970) {
+            y = manhattan_household_income_1970$MedianIncome1970
+        }
+        if(input$year == 1980) {
+            y = manhattan_household_income_1980$MedianHHIncome1979
+        }
+        if(input$year == 1990) {
+            y = manhattan_household_income_1990$MedianHHIncome1989
+        }
+        if(input$year == 2000) {
+            y = manhattan_household_income_2000$MedianHHIncome1999
+        }
+        if(input$year == 2010) {
+            y = manhattan_household_income_2010$MedianHHIncome2010
+        }
         pal <- colorNumeric("viridis", NULL)
         leaflet(manhattan_household_income_1950) %>%
             addTiles() %>%
             addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
-                        fillColor = ~pal(MedianHHIncome1949)) %>%
-            addLegend(pal = pal, values = ~MedianHHIncome1949, opacity = 1.0)
+                        fillColor = ~pal(y)) %>%
+            addLegend(pal = pal, values = ~y, opacity = 1.0)
         
     })
     

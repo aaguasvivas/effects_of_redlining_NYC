@@ -135,7 +135,7 @@ for(i in 1:nrow(tracts1960)){
 ## Convert factors to middle of range
 
 tracts1960Print<-tracts1960%>%
-                mutate(MedianIncome=recode(MedianBracket,"B8W001"=500,"B8W002"=1500, "B8W003"=2500,
+                mutate(MedianIncome1960=recode(MedianBracket,"B8W001"=500,"B8W002"=1500, "B8W003"=2500,
                                          "B8W004"=3500, "B8W005"=4500, "B8W006"=5500,
                                          "B8W007"=6500, "B8W008"=7500, "B8W009"=8500,
                                          "B8W010"=9500, "B8W011"=12500, "B8W012"=20000,
@@ -146,8 +146,8 @@ tracts1960Print<-tracts1960%>%
 tracts1960Print
 
 manhattan_household_income_1960 <- tracts1960Print %>%
-  filter(STATE == "New York" & COUNTYA == "61" & !is.na(MedianIncome)) %>%
-  select(GISJOIN, MedianIncome)
+  filter(STATE == "New York" & COUNTYA == "61" & !is.na(MedianIncome1960)) %>%
+  select(GISJOIN, MedianIncome1960)
 
 manhattan_1960_map <- sf::st_read(dsn = "raw-data/householdincomedata/1960/nhgis0010_shape/nhgis0010_shapefile_tl2008_us_tract_1960/",
                         layer = "US_tract_1960_conflated")
@@ -171,8 +171,8 @@ pal <- colorNumeric("viridis", NULL)
 leaflet(manhattan_1960_map) %>%
   addTiles() %>%
   addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
-              fillColor = ~pal(MedianIncome)) %>%
-  addLegend(pal = pal, values = ~MedianIncome, opacity = 1.0)
+              fillColor = ~pal(MedianIncome1960)) %>%
+  addLegend(pal = pal, values = ~MedianIncome1960, opacity = 1.0)
 
 
 ```
@@ -203,7 +203,7 @@ for(i in 1:nrow(tracts1970)){
 
 ## Convert factors to middle of range
 tracts1970Print<-tracts1970%>%
-  mutate(MedianIncome=recode(MedianBracket,"C3T001"=500,"C3T002"=1500, "C3T003"=2500,
+  mutate(MedianIncome1970=recode(MedianBracket,"C3T001"=500,"C3T002"=1500, "C3T003"=2500,
                              "C3T004"=3500, "C3T005"=4500, "C3T006"=5500,
                              "C3T007"=6500, "C3T008"=7500, "C3T009"=8500,
                              "C3T010"=9500, "C3T011"=11000, "C3T012"=13500,
@@ -212,8 +212,8 @@ tracts1970Print<-tracts1970%>%
 #saveRDS(tracts1970Print, file="~/Downloads/nhgis0017_csv/1970MedianFamilyIncome_CensusTracts.RDS")
 
 manhattan_household_income_1970 <- tracts1970Print %>%
-  filter(STATE == "New York" & COUNTYA == "61" & !is.na(MedianIncome)) %>%
-  select(GISJOIN, MedianIncome)
+  filter(STATE == "New York" & COUNTYA == "61" & !is.na(MedianIncome1970)) %>%
+  select(GISJOIN, MedianIncome1970)
 
 manhattan_1970_map <- sf::st_read(dsn = "raw-data/householdincomedata/1970/nhgis0011_shape/nhgis0011_shapefile_tl2008_us_tract_1970/",
                         layer = "US_tract_1970_conflated")
@@ -237,8 +237,8 @@ pal <- colorNumeric("viridis", NULL)
 leaflet(manhattan_1970_map) %>%
   addTiles() %>%
   addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
-              fillColor = ~pal(MedianIncome)) %>%
-  addLegend(pal = pal, values = ~MedianIncome, opacity = 1.0)
+              fillColor = ~pal(MedianIncome1970)) %>%
+  addLegend(pal = pal, values = ~MedianIncome1970, opacity = 1.0)
 
 
 ```
