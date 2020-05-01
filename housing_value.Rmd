@@ -52,6 +52,8 @@ data1950 <- read.csv("raw-data/housingdata/1950/nhgis0016_csv/nhgis0016_ds82_195
 tracts1950 <- sf::st_read(dsn = "raw-data/housingdata/1950/nhgis0016_shape/nhgis0016_shapefile_tl2008_us_tract_1950/",
                          layer = "US_tract_1950_conflated")
 
+length(which(data1950$GISJOIN %in% tracts1950$GISJOIN))
+
 # *Select New York observations only using NHGISST variable NHGISST should be
 # consistent between census years, but you might need to double-check this if
 # you try 1960, 1970. *The NHGISST code is 360 for New York because New York's
@@ -64,10 +66,9 @@ tracts1950 <- sf::st_read(dsn = "raw-data/housingdata/1950/nhgis0016_shape/nhgis
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts1950 <-
-  tracts1950 %>% filter(NHGISST == "360" & COUNTY=="061") %>%
-  merge(data1950, "GISJOIN")
-
-
+  tracts1950 %>% 
+  merge(data1950, "GISJOIN") %>%
+  filter(NHGISST == "360" & NHGISCTY == "061") 
 # Set projection of tracts dataset to `projection` required by leaflet
 
 tracts1950 <- sf::st_transform(tracts1950,  crs="+init=epsg:4326")
@@ -88,8 +89,8 @@ pal <- colorNumeric("viridis", NULL)
 leaflet(tracts1950) %>%
   addTiles() %>%
   addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
-              fillColor = ~pal(MedianHHIncome1989)) %>%
-  addLegend(pal = pal, values = ~MedianHHIncome1989, opacity = 1.0)
+              fillColor = ~pal(HousingValue1950)) %>%
+  addLegend(pal = pal, values = ~HousingValue1950, opacity = 1.0)
 
 
 
