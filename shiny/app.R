@@ -101,7 +101,7 @@ tabPanel("Median Household Income",
                 tabsetPanel(
                     
                     tabPanel("Manhattan", 
-                             h4("Median Household Income in Manhattan in "),
+                             h4("Median Household Income in Manhattan"),
                              leafletOutput("manhattan_household_income_1950")),
                     tabPanel("Bronx", 
                              h4("Median Household Income in The Bronx in 1950"),
