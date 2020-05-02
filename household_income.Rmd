@@ -25,7 +25,33 @@ library(gganimate)
 library(spdplyr)
 library(rmapshaper)
 
+household_income_data_1950 <- "raw-data/householdincomedata/1950/nhgis0021_csv/nhgis0021_ds82_1950_tract.csv"
+census_tract_1950 <- "raw-data/householdincomedata/1950/nhgis0021_shape/nhgis0021_shapefile_tl2008_us_tract_1950/"
+census_tract_layers_1950 <- "US_tract_1950_conflated"
 
+household_income_data_1960 <- "raw-data/householdincomedata/1960/nhgis0022_csv/nhgis0022_ds92_1960_tract.csv"
+census_tract_1960 <- "raw-data/householdincomedata/1960/nhgis0022_shape/nhgis0022_shapefile_tl2008_us_tract_1960/"
+census_tract_layers_1960 <- "US_tract_1960_conflated"
+
+household_income_data_1970 <- "raw-data/householdincomedata/1970/nhgis0023_csv/nhgis0023_ds99_1970_tract.csv"
+census_tract_1970 <- "raw-data/householdincomedata/1970/nhgis0023_shape/nhgis0023_shapefile_tl2008_us_tract_1970/"
+census_tract_layers_1970 <- "US_tract_1970_conflated"
+
+household_income_data_1980 <- "raw-data/householdincomedata/1980/nhgis0024_csv/nhgis0024_ds107_1980_tract.csv"
+census_tract_1980 <- "raw-data/householdincomedata/1980/nhgis0024_shape/nhgis0024_shapefile_tl2008_us_tract_1980/"
+census_tract_layers_1980 <- "US_tract_1980_conflated"
+
+household_income_data_1990 <- "raw-data/householdincomedata/1990/nhgis0025_csv/nhgis0025_ds123_1990_tract.csv"
+census_tract_1990 <- "raw-data/householdincomedata/1990/nhgis0025_shape/nhgis0025_shapefile_tl2008_us_tract_1990/"
+census_tract_layers_1990 <- "US_tract_1990_conflated"
+
+household_income_data_2000 <- "raw-data/householdincomedata/2000/nhgis0026_csv/nhgis0026_ds151_2000_tract.csv"
+census_tract_2000 <- "raw-data/householdincomedata/2000/nhgis0026_shape/nhgis0026_shapefile_tl2008_us_tract_2000/"
+census_tract_layers_2000 <- "US_tract_2000_conflated"
+
+household_income_data_2010 <- "raw-data/householdincomedata/2010/nhgis0027_csv/nhgis0027_ds176_20105_2010_tract.csv"
+census_tract_2010 <- "raw-data/householdincomedata/2010/nhgis0027_shape/nhgis0027_shapefile_tl2010_us_tract_2010/"
+census_tract_layers_2010 <- "US_tract_2010"
 
 ```
 
@@ -41,7 +67,7 @@ library(rmapshaper)
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-data1950 <- read.csv("raw-data/householdincomedata/1950/nhgis0009_csv/nhgis0009_ds82_1950_tract.csv")%>%
+data1950 <- read.csv(household_income_data_1950)%>%
   filter(STATE == "New York" & B0F001 > 0) %>%
   mutate(MedianHHIncome1949 = B0F001) %>%
   select(GISJOIN,MedianHHIncome1949)
@@ -51,9 +77,8 @@ data1950 <- read.csv("raw-data/householdincomedata/1950/nhgis0009_csv/nhgis0009_
 # layer is the filename of the .shp file inside the
 # folder dsn points to. 
 
-tracts1950 <- sf::st_read(dsn = 
-                            "raw-data/householdincomedata/1950/nhgis0009_shape/nhgis0009_shapefile_tl2008_us_tract_1950/",
-                         layer = "US_tract_1950_conflated")
+tracts1950 <- sf::st_read(dsn = census_tract_1950,
+                          layer = census_tract_layers_1950)
 
 # *Select New York observations only using NHGISST variable NHGISST should be
 # consistent between census years, but you might need to double-check this if
@@ -105,7 +130,7 @@ leaflet(tracts1950) %>%
 ## Load data
 ## Create variable Median Bracket, filter out missing data
 
-tracts1960<-read.csv("raw-data/householdincomedata/1960/nhgis0010_csv/nhgis0010_ds92_1960_tract.csv", 
+tracts1960<-read.csv(household_income_data_1960, 
                      stringsAsFactors = FALSE)%>%
                      mutate(MedianBracket=NA)%>%
                      filter(is.na(B8W001)==FALSE)
@@ -149,8 +174,8 @@ manhattan_household_income_1960 <- tracts1960Print %>%
   filter(STATE == "New York" & COUNTYA == "61" & !is.na(MedianIncome1960)) %>%
   select(GISJOIN, MedianIncome1960)
 
-manhattan_1960_map <- sf::st_read(dsn = "raw-data/householdincomedata/1960/nhgis0010_shape/nhgis0010_shapefile_tl2008_us_tract_1960/",
-                        layer = "US_tract_1960_conflated")
+manhattan_1960_map <- sf::st_read(dsn = census_tract_1960,
+                        layer = census_tract_layers_1960)
 
 manhattan_1960_map <- manhattan_1960_map %>%
   merge(manhattan_household_income_1960, "GISJOIN")
@@ -180,7 +205,7 @@ leaflet(manhattan_1960_map) %>%
 ```{r manhattan-ny1970census, include=FALSE}
 
 #### Median Family Income 1970 Census Tracts####
-tracts1970 <- read.csv("raw-data/householdincomedata/1970/nhgis0011_csv/nhgis0011_ds99_1970_tract.csv", 
+tracts1970 <- read.csv(household_income_data_1970, 
                        stringsAsFactors = FALSE) %>%
   mutate(MedianBracket=NA) %>%
   filter(is.na(C3T001)==FALSE & C3T001>0)
@@ -202,7 +227,7 @@ for(i in 1:nrow(tracts1970)){
 }
 
 ## Convert factors to middle of range
-tracts1970Print<-tracts1970%>%
+tracts1970Print <- tracts1970 %>%
   mutate(MedianIncome1970=recode(MedianBracket,"C3T001"=500,"C3T002"=1500, "C3T003"=2500,
                              "C3T004"=3500, "C3T005"=4500, "C3T006"=5500,
                              "C3T007"=6500, "C3T008"=7500, "C3T009"=8500,
@@ -215,8 +240,8 @@ manhattan_household_income_1970 <- tracts1970Print %>%
   filter(STATE == "New York" & COUNTYA == "61" & !is.na(MedianIncome1970)) %>%
   select(GISJOIN, MedianIncome1970)
 
-manhattan_1970_map <- sf::st_read(dsn = "raw-data/householdincomedata/1970/nhgis0011_shape/nhgis0011_shapefile_tl2008_us_tract_1970/",
-                        layer = "US_tract_1970_conflated")
+manhattan_1970_map <- sf::st_read(dsn = census_tract_1970,
+                        layer = census_tract_layers_1970)
 
 manhattan_1970_map <- manhattan_1970_map %>%
   merge(manhattan_household_income_1970, "GISJOIN")
@@ -255,7 +280,7 @@ leaflet(manhattan_1970_map) %>%
 # data. Also drop census tracts which reported 0 median income
 
 manhattandata1980 <- 
-  read.csv("raw-data/householdincomedata/1980/nhgis0012_csv/nhgis0012_ds107_1980_tract.csv") %>%
+  read.csv(household_income_data_1980) %>%
   filter(STATE == "New York" & DIE001 > 0) %>%
   mutate(MedianHHIncome1979 = DIE001) %>%
   select(GISJOIN, MedianHHIncome1979)
@@ -265,8 +290,8 @@ manhattandata1980 <-
 # layer is the filename of the .shp file inside the
 # folder dsn points to. 
 
-tracts1980 <- sf::st_read(dsn = "raw-data/householdincomedata/1980/nhgis0012_shape/nhgis0012_shapefile_tl2008_us_tract_1980/",
-                         layer = "US_tract_1980_conflated")
+tracts1980 <- sf::st_read(dsn = census_tract_1980,
+                         layer = census_tract_layers_1980)
 
 # *Select New York observations only using NHGISST variable NHGISST should be
 # consistent between census years, but you might need to double-check this if
@@ -321,7 +346,7 @@ leaflet(tracts1980) %>%
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-data1990 <- read.csv("raw-data/householdincomedata/1990/nhgis0013_csv/nhgis0013_ds123_1990_tract.csv")%>%
+data1990 <- read.csv(household_income_data_1990)%>%
   filter(STATE == "New York" & E4U001 > 0)%>%
   mutate(MedianHHIncome1989 = E4U001)%>%
   select(GISJOIN,MedianHHIncome1989)
@@ -331,8 +356,8 @@ data1990 <- read.csv("raw-data/householdincomedata/1990/nhgis0013_csv/nhgis0013_
 # layer is the filename of the .shp file inside the
 # folder dsn points to. 
 
-tracts1990 <- sf::st_read(dsn = "raw-data/householdincomedata/1990/nhgis0013_shape/nhgis0013_shapefile_tl2008_us_tract_1990/",
-                         layer = "US_tract_1990_conflated")
+tracts1990 <- sf::st_read(dsn = census_tract_1990,
+                         layer = census_tract_layers_1990)
 
 # *Select New York observations only using NHGISST variable NHGISST should be
 # consistent between census years, but you might need to double-check this if
@@ -388,7 +413,7 @@ leaflet(tracts1990) %>%
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-data2000 <- read.csv("raw-data/householdincomedata/2000/nhgis0014_csv/nhgis0014_ds151_2000_tract.csv")%>%
+data2000 <- read.csv(household_income_data_2000)%>%
   filter(STATE == "New York" & GMY001 > 0)%>%
   mutate(MedianHHIncome1999 = GMY001)%>%
   select(GISJOIN,MedianHHIncome1999)
@@ -398,8 +423,8 @@ data2000 <- read.csv("raw-data/householdincomedata/2000/nhgis0014_csv/nhgis0014_
 # layer is the filename of the .shp file inside the
 # folder dsn points to. 
 
-tracts2000 <- sf::st_read(dsn = "raw-data/householdincomedata/2000/nhgis0014_shape/nhgis0014_shapefile_tl2008_us_tract_2000/",
-                         layer = "US_tract_2000_conflated")
+tracts2000 <- sf::st_read(dsn = census_tract_2000,
+                         layer = census_tract_layers_2000)
 
 # *Select New York observations only using NHGISST variable NHGISST should be
 # consistent between census years, but you might need to double-check this if
@@ -456,7 +481,7 @@ leaflet(tracts2000) %>%
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-data2010 <- read.csv("raw-data/householdincomedata/2010/nhgis0015_csv/nhgis0015_ds176_20105_2010_tract.csv")%>%
+data2010 <- read.csv(household_income_data_2010)%>%
   filter(STATE == "New York" & JOIM001 > 0)%>%
   mutate(MedianHHIncome2010 = JOIM001)%>%
   select(GISJOIN,MedianHHIncome2010)
@@ -466,8 +491,8 @@ data2010 <- read.csv("raw-data/householdincomedata/2010/nhgis0015_csv/nhgis0015_
 # layer is the filename of the .shp file inside the
 # folder dsn points to. 
 
-tracts2010 <- sf::st_read(dsn = "raw-data/householdincomedata/2010/nhgis0015_shape/nhgis0015_shapefile_tl2010_us_tract_2010/",
-                         layer = "US_tract_2010")
+tracts2010 <- sf::st_read(dsn = census_tract_2010,
+                         layer = census_tract_layers_2010)
 
 # *Select New York observations only using NHGISST variable NHGISST should be
 # consistent between census years, but you might need to double-check this if
@@ -525,7 +550,7 @@ BRONX HOUSEHOLD INCOME
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-bronx_data1950 <- read.csv("raw-data/householdincomedata/1950/nhgis0009_csv/nhgis0009_ds82_1950_tract.csv")%>%
+bronx_data1950 <- read.csv(household_income_data_1950)%>%
   filter(STATE == "New York" & B0F001 > 0) %>%
   mutate(MedianHHIncome1949 = B0F001) %>%
   select(GISJOIN,MedianHHIncome1949)
@@ -535,9 +560,8 @@ bronx_data1950 <- read.csv("raw-data/householdincomedata/1950/nhgis0009_csv/nhgi
 # layer is the filename of the .shp file inside the
 # folder dsn points to. 
 
-bronx_tracts1950 <- sf::st_read(dsn = 
-                            "raw-data/householdincomedata/1950/nhgis0009_shape/nhgis0009_shapefile_tl2008_us_tract_1950/",
-                         layer = "US_tract_1950_conflated")
+bronx_tracts1950 <- sf::st_read(dsn = census_tract_1950,
+                                layer = census_tract_layers_1950)
 
 # *Select New York observations only using NHGISST variable NHGISST should be
 # consistent between census years, but you might need to double-check this if
@@ -589,7 +613,7 @@ leaflet(bronx_tracts1950) %>%
 ## Load data
 ## Create variable Median Bracket, filter out missing data
 
-tracts1960<-read.csv("raw-data/householdincomedata/1960/nhgis0010_csv/nhgis0010_ds92_1960_tract.csv", 
+tracts1960<-read.csv(household_income_data_1960, 
                      stringsAsFactors = FALSE)%>%
                      mutate(MedianBracket=NA)%>%
                      filter(is.na(B8W001)==FALSE)
@@ -618,7 +642,7 @@ for(i in 1:nrow(tracts1960)){
 
 ## Convert factors to middle of range
 
-tracts1960Print<-tracts1960%>%
+tracts1960Print <- tracts1960%>%
                 mutate(MedianIncome=recode(MedianBracket,"B8W001"=500,"B8W002"=1500, "B8W003"=2500,
                                          "B8W004"=3500, "B8W005"=4500, "B8W006"=5500,
                                          "B8W007"=6500, "B8W008"=7500, "B8W009"=8500,
@@ -633,8 +657,8 @@ bronx_household_income_1960 <- tracts1960Print %>%
   filter(STATE == "New York" & COUNTYA == "5" & !is.na(MedianIncome)) %>%
   select(GISJOIN, MedianIncome)
 
-bronx_1960_map <- sf::st_read(dsn = "raw-data/householdincomedata/1960/nhgis0010_shape/nhgis0010_shapefile_tl2008_us_tract_1960/",
-                        layer = "US_tract_1960_conflated")
+bronx_1960_map <- sf::st_read(dsn = census_tract_1960,
+                        layer = census_tract_layers_1960)
 
 bronx_1960_map <- bronx_1960_map %>%
   merge(bronx_household_income_1960, "GISJOIN")
@@ -663,7 +687,8 @@ leaflet(bronx_1960_map) %>%
 ```{r bronx-income-1970, include=FALSE}
 
 #### Median Family Income 1970 Census Tracts####
-tracts1970 <- read.csv("raw-data/householdincomedata/1970/nhgis0011_csv/nhgis0011_ds99_1970_tract.csv", 
+
+tracts1970 <- read.csv(household_income_data_1970, 
                        stringsAsFactors = FALSE) %>%
   mutate(MedianBracket=NA) %>%
   filter(is.na(C3T001)==FALSE & C3T001>0)
@@ -698,8 +723,8 @@ bronx_household_income_1970 <- tracts1970Print %>%
   filter(STATE == "New York" & COUNTYA == "5" & !is.na(MedianIncome)) %>%
   select(GISJOIN, MedianIncome)
 
-bronx_1970_map <- sf::st_read(dsn = "raw-data/householdincomedata/1970/nhgis0011_shape/nhgis0011_shapefile_tl2008_us_tract_1970/",
-                        layer = "US_tract_1970_conflated")
+bronx_1970_map <- sf::st_read(dsn = census_tract_1970,
+                        layer = census_tract_layers_1970)
 
 bronx_1970_map <- bronx_1970_map %>%
   merge(bronx_household_income_1970, "GISJOIN")
@@ -738,7 +763,7 @@ leaflet(bronx_1970_map) %>%
 # data. Also drop census tracts which reported 0 median income
 
 bronxdata1980 <- 
-  read.csv("raw-data/householdincomedata/1980/nhgis0012_csv/nhgis0012_ds107_1980_tract.csv") %>%
+  read.csv(household_income_data_1980) %>%
   filter(STATE == "New York" & DIE001 > 0) %>%
   mutate(MedianHHIncome1979 = DIE001) %>%
   select(GISJOIN, MedianHHIncome1979)
@@ -748,8 +773,8 @@ bronxdata1980 <-
 # layer is the filename of the .shp file inside the
 # folder dsn points to. 
 
-tracts1980 <- sf::st_read(dsn = "raw-data/householdincomedata/1980/nhgis0012_shape/nhgis0012_shapefile_tl2008_us_tract_1980/",
-                         layer = "US_tract_1980_conflated")
+tracts1980 <- sf::st_read(dsn = census_tract_1980,
+                         layer = census_tract_layers_1980)
 
 # *Select New York observations only using NHGISST variable NHGISST should be
 # consistent between census years, but you might need to double-check this if
@@ -804,7 +829,7 @@ leaflet(tracts1980) %>%
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-data1990 <- read.csv("raw-data/householdincomedata/1990/nhgis0013_csv/nhgis0013_ds123_1990_tract.csv")%>%
+data1990 <- read.csv(household_income_data_1990)%>%
   filter(STATE == "New York" & E4U001 > 0)%>%
   mutate(MedianHHIncome1989 = E4U001)%>%
   select(GISJOIN,MedianHHIncome1989)
@@ -814,8 +839,8 @@ data1990 <- read.csv("raw-data/householdincomedata/1990/nhgis0013_csv/nhgis0013_
 # layer is the filename of the .shp file inside the
 # folder dsn points to. 
 
-tracts1990 <- sf::st_read(dsn = "raw-data/householdincomedata/1990/nhgis0013_shape/nhgis0013_shapefile_tl2008_us_tract_1990/",
-                         layer = "US_tract_1990_conflated")
+tracts1990 <- sf::st_read(dsn = census_tract_1990,
+                         layer = census_tract_layers_1990)
 
 # *Select New York observations only using NHGISST variable NHGISST should be
 # consistent between census years, but you might need to double-check this if
@@ -871,7 +896,7 @@ leaflet(tracts1990) %>%
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-data2000 <- read.csv("raw-data/householdincomedata/2000/nhgis0014_csv/nhgis0014_ds151_2000_tract.csv")%>%
+data2000 <- read.csv(household_income_data_2000)%>%
   filter(STATE == "New York" & GMY001 > 0)%>%
   mutate(MedianHHIncome1999 = GMY001)%>%
   select(GISJOIN,MedianHHIncome1999)
@@ -881,8 +906,8 @@ data2000 <- read.csv("raw-data/householdincomedata/2000/nhgis0014_csv/nhgis0014_
 # layer is the filename of the .shp file inside the
 # folder dsn points to. 
 
-tracts2000 <- sf::st_read(dsn = "raw-data/householdincomedata/2000/nhgis0014_shape/nhgis0014_shapefile_tl2008_us_tract_2000/",
-                         layer = "US_tract_2000_conflated")
+tracts2000 <- sf::st_read(dsn = census_tract_2000,
+                         layer = census_tract_layers_2000)
 
 # *Select New York observations only using NHGISST variable NHGISST should be
 # consistent between census years, but you might need to double-check this if
@@ -939,7 +964,7 @@ leaflet(tracts2000) %>%
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-data2010 <- read.csv("raw-data/householdincomedata/2010/nhgis0015_csv/nhgis0015_ds176_20105_2010_tract.csv")%>%
+data2010 <- read.csv(household_income_data_2010)%>%
   filter(STATE == "New York" & JOIM001 > 0)%>%
   mutate(MedianHHIncome2010 = JOIM001)%>%
   select(GISJOIN,MedianHHIncome2010)
@@ -949,8 +974,8 @@ data2010 <- read.csv("raw-data/householdincomedata/2010/nhgis0015_csv/nhgis0015_
 # layer is the filename of the .shp file inside the
 # folder dsn points to. 
 
-tracts2010 <- sf::st_read(dsn = "raw-data/householdincomedata/2010/nhgis0015_shape/nhgis0015_shapefile_tl2010_us_tract_2010/",
-                         layer = "US_tract_2010")
+tracts2010 <- sf::st_read(dsn = census_tract_2010,
+                         layer = census_tract_layers_2010)
 
 # *Select New York observations only using NHGISST variable NHGISST should be
 # consistent between census years, but you might need to double-check this if
