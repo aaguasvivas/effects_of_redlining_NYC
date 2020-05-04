@@ -76,8 +76,10 @@ tracts1950 <- sf::st_read(dsn = census_tract_housing_value_1950,
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts1950 <-
-  tracts1950 %>% filter(NHGISST == "360" & COUNTY=="061") %>%
-  merge(data1950, "GISJOIN")
+  tracts1950 %>% 
+  merge(data1950, "GISJOIN") %>%
+  filter(NHGISST == "360") 
+  
 
 
 # Set projection of tracts dataset to `projection` required by leaflet
