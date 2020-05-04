@@ -1506,7 +1506,7 @@ leaflet(tracts2010) %>%
 QUEENS HOUSEHOLD INCOME 
 
 
-```{r bronx-income-1950, include=FALSE}
+```{r queens-income-1950, include=FALSE}
 
 # Import Census Tract Data as data.frame Consult
 # nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
@@ -1517,7 +1517,7 @@ QUEENS HOUSEHOLD INCOME
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-bronx_data1950 <- read.csv(household_income_data_1950)%>%
+queens_data1950 <- read.csv(household_income_data_1950) %>%
   filter(STATE == "New York" & B0F001 > 0) %>%
   mutate(MedianHHIncome1949 = B0F001) %>%
   select(GISJOIN,MedianHHIncome1949)
@@ -1527,7 +1527,7 @@ bronx_data1950 <- read.csv(household_income_data_1950)%>%
 # layer is the filename of the .shp file inside the
 # folder dsn points to. 
 
-bronx_tracts1950 <- sf::st_read(dsn = census_tract_1950,
+queens_tracts1950 <- sf::st_read(dsn = census_tract_1950,
                                 layer = census_tract_layers_1950)
 
 # *Select New York observations only using NHGISST variable NHGISST should be
@@ -1541,29 +1541,29 @@ bronx_tracts1950 <- sf::st_read(dsn = census_tract_1950,
 # 061 *Can see other NY county fips codes at
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
-bronx_tracts1950 <-
-  bronx_tracts1950 %>% filter(NHGISST == "360" & COUNTY == "005") %>%
-  merge(bronx_data1950, "GISJOIN")
+queens_tracts1950 <-
+  queens_tracts1950 %>% filter(NHGISST == "360" & COUNTY == "081") %>%
+  merge(queens_data1950, "GISJOIN")
 
 
 # Set projection of tracts dataset to `projection` required by leaflet
 
-bronx_tracts1950 <- sf::st_transform(bronx_tracts1950,  crs="+init=epsg:4326")
+queens_tracts1950 <- sf::st_transform(queens_tracts1950,  crs="+init=epsg:4326")
 
 # Condense size of data for faster processing
 
-bronx_tracts1950 <- rmapshaper::ms_simplify(bronx_tracts1950)
+queens_tracts1950 <- rmapshaper::ms_simplify(queens_tracts1950)
 
 # Set palette color
 
-write_rds(bronx_tracts1950, "shiny/household_income/bronx/1950/household_income_1950.rds")
+write_rds(queens_tracts1950, "shiny/household_income/queens/1950/household_income_1950.rds")
 
 
 pal <- colorNumeric("viridis", NULL)
 
 #  Plot the data
 
-leaflet(bronx_tracts1950) %>%
+leaflet(queens_tracts1950) %>%
   addTiles() %>%
   addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
               fillColor = ~pal(MedianHHIncome1949)) %>%
@@ -1573,7 +1573,7 @@ leaflet(bronx_tracts1950) %>%
 
 ```
 
-```{r bronx-income-1960, include=FALSE}
+```{r queens-income-1960, include=FALSE}
 
 ####1960 Census Tracts Median Family Income####
 
@@ -1610,7 +1610,7 @@ for(i in 1:nrow(tracts1960)){
 ## Convert factors to middle of range
 
 tracts1960Print <- tracts1960 %>%
-                mutate(MedianIncome=recode(MedianBracket,"B8W001"=500,"B8W002"=1500, "B8W003"=2500,
+                mutate(MedianIncome1960=recode(MedianBracket,"B8W001"=500,"B8W002"=1500, "B8W003"=2500,
                                          "B8W004"=3500, "B8W005"=4500, "B8W006"=5500,
                                          "B8W007"=6500, "B8W008"=7500, "B8W009"=8500,
                                          "B8W010"=9500, "B8W011"=12500, "B8W012"=20000,
@@ -1620,38 +1620,38 @@ tracts1960Print <- tracts1960 %>%
 
 tracts1960Print
 
-bronx_household_income_1960 <- tracts1960Print %>%
-  filter(STATE == "New York" & COUNTYA == "5" & !is.na(MedianIncome)) %>%
-  select(GISJOIN, MedianIncome)
+queens_household_income_1960 <- tracts1960Print %>%
+  filter(STATE == "New York" & COUNTYA == "81" & !is.na(MedianIncome1960)) %>%
+  select(GISJOIN, MedianIncome1960)
 
-bronx_1960_map <- sf::st_read(dsn = census_tract_1960,
+queens_1960_map <- sf::st_read(dsn = census_tract_1960,
                         layer = census_tract_layers_1960)
 
-bronx_1960_map <- bronx_1960_map %>%
-  merge(bronx_household_income_1960, "GISJOIN")
+queens_1960_map <- queens_1960_map %>%
+  merge(queens_household_income_1960, "GISJOIN")
 
-bronx_1960_map <- sf::st_transform(bronx_1960_map,  
+queens_1960_map <- sf::st_transform(queens_1960_map,  
                                        crs="+init=epsg:4326")
 
-bronx_1960_map <- rmapshaper::ms_simplify(bronx_1960_map)
+queens_1960_map <- rmapshaper::ms_simplify(queens_1960_map)
 
 # Set palette color
 
-write_rds(bronx_1960_map, "shiny/household_income/bronx/1960/household_income_1960.rds")
+write_rds(queens_1960_map, "shiny/household_income/queens/1960/household_income_1960.rds")
 
 pal <- colorNumeric("viridis", NULL)
 
 #  Plot the data
 
-leaflet(bronx_1960_map) %>%
+leaflet(queens_1960_map) %>%
   addTiles() %>%
   addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
-              fillColor = ~pal(MedianIncome)) %>%
-  addLegend(pal = pal, values = ~MedianIncome, opacity = 1.0)
+              fillColor = ~pal(MedianIncome1960)) %>%
+  addLegend(pal = pal, values = ~MedianIncome1960, opacity = 1.0)
 
 ```
 
-```{r bronx-income-1970, include=FALSE}
+```{r queens-income-1970, include=FALSE}
 
 #### Median Family Income 1970 Census Tracts####
 
@@ -1677,8 +1677,8 @@ for(i in 1:nrow(tracts1970)){
 }
 
 ## Convert factors to middle of range
-tracts1970Print<-tracts1970 %>%
-  mutate(MedianIncome=recode(MedianBracket,"C3T001"=500,"C3T002"=1500, "C3T003"=2500,
+tracts1970Print <-tracts1970 %>%
+  mutate(MedianIncome1970=recode(MedianBracket,"C3T001"=500,"C3T002"=1500, "C3T003"=2500,
                              "C3T004"=3500, "C3T005"=4500, "C3T006"=5500,
                              "C3T007"=6500, "C3T008"=7500, "C3T009"=8500,
                              "C3T010"=9500, "C3T011"=11000, "C3T012"=13500,
@@ -1686,39 +1686,39 @@ tracts1970Print<-tracts1970 %>%
 ## SaveRDS file
 #saveRDS(tracts1970Print, file="~/Downloads/nhgis0017_csv/1970MedianFamilyIncome_CensusTracts.RDS")
 
-bronx_household_income_1970 <- tracts1970Print %>%
-  filter(STATE == "New York" & COUNTYA == "5" & !is.na(MedianIncome)) %>%
-  select(GISJOIN, MedianIncome)
+queens_household_income_1970 <- tracts1970Print %>%
+  filter(STATE == "New York" & COUNTYA == "81" & !is.na(MedianIncome1970)) %>%
+  select(GISJOIN, MedianIncome1970)
 
-bronx_1970_map <- sf::st_read(dsn = census_tract_1970,
+queens_1970_map <- sf::st_read(dsn = census_tract_1970,
                         layer = census_tract_layers_1970)
 
-bronx_1970_map <- bronx_1970_map %>%
-  merge(bronx_household_income_1970, "GISJOIN")
+queens_1970_map <- queens_1970_map %>%
+  merge(queens_household_income_1970, "GISJOIN")
 
-bronx_1970_map <- sf::st_transform(bronx_1970_map,  
+queens_1970_map <- sf::st_transform(queens_1970_map,  
                                        crs="+init=epsg:4326")
 
-bronx_1970_map <- rmapshaper::ms_simplify(bronx_1970_map)
+queens_1970_map <- rmapshaper::ms_simplify(queens_1970_map)
 
 # Set palette color
 
-write_rds(bronx_1970_map, "shiny/household_income/bronx/1970/household_income_1970.rds")
+write_rds(queens_1970_map, "shiny/household_income/queens/1970/household_income_1970.rds")
 
 pal <- colorNumeric("viridis", NULL)
 
 #  Plot the data
 
-leaflet(bronx_1970_map) %>%
+leaflet(queens_1970_map) %>%
   addTiles() %>%
   addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
-              fillColor = ~pal(MedianIncome)) %>%
-  addLegend(pal = pal, values = ~MedianIncome, opacity = 1.0)
+              fillColor = ~pal(MedianIncome1970)) %>%
+  addLegend(pal = pal, values = ~MedianIncome1970, opacity = 1.0)
 
 
 ```
 
-```{r bronx-income-1980, include=FALSE}
+```{r queens-income-1980, include=FALSE}
 
 # Import Census Tract Data as data.frame Consult
 # nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
@@ -1729,7 +1729,7 @@ leaflet(bronx_1970_map) %>%
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-bronxdata1980 <- 
+queensdata1980 <- 
   read.csv(household_income_data_1980) %>%
   filter(STATE == "New York" & DIE001 > 0) %>%
   mutate(MedianHHIncome1979 = DIE001) %>%
@@ -1755,8 +1755,8 @@ tracts1980 <- sf::st_read(dsn = census_tract_1980,
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts1980 <-
-  tracts1980 %>% filter(NHGISST == "360" & COUNTY=="005")%>%
-  merge(bronxdata1980, "GISJOIN")
+  tracts1980 %>% filter(NHGISST == "360" & COUNTY=="081")%>%
+  merge(queensdata1980, "GISJOIN")
 
 
 # Set projection of tracts dataset to `projection` required by leaflet
@@ -1767,7 +1767,7 @@ tracts1980 <- sf::st_transform(tracts1980, crs="+init=epsg:4326")
 
 tracts1980 <- rmapshaper::ms_simplify(tracts1980)
 
-write_rds(tracts1980, "shiny/household_income/bronx/1980/household_income_1980.rds")
+write_rds(tracts1980, "shiny/household_income/queens/1980/household_income_1980.rds")
 
 # Set palette color
 
@@ -1785,7 +1785,7 @@ leaflet(tracts1980) %>%
 
 ```
 
-```{r bronx-income-1990, include=FALSE}
+```{r queens-income-1990, include=FALSE}
 
 # Import Census Tract Data as data.frame Consult
 # nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
@@ -1798,7 +1798,7 @@ leaflet(tracts1980) %>%
 
 data1990 <- read.csv(household_income_data_1990)%>%
   filter(STATE == "New York" & E4U001 > 0)%>%
-  mutate(MedianHHIncome1989 = E4U001)%>%
+  mutate(MedianHHIncome1989 = E4U001) %>%
   select(GISJOIN,MedianHHIncome1989)
 
 # Import Census Tract Shapefile into R as SpatialPolygonsDataFrameFormat (SP Dataframe)
@@ -1821,7 +1821,7 @@ tracts1990 <- sf::st_read(dsn = census_tract_1990,
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts1990 <-
-  tracts1990 %>% filter(NHGISST == "360" & COUNTY=="005")%>%
+  tracts1990 %>% filter(NHGISST == "360" & COUNTY=="081") %>%
   merge(data1990, "GISJOIN")
 
 
@@ -1833,7 +1833,7 @@ tracts1990 <- sf::st_transform(tracts1990,  crs="+init=epsg:4326")
 
 tracts1990 <- rmapshaper::ms_simplify(tracts1990)
 
-write_rds(tracts1990, "shiny/household_income/bronx/1990/household_income_1990.rds")
+write_rds(tracts1990, "shiny/household_income/queens/1990/household_income_1990.rds")
 
 
 # Set palette color
@@ -1852,7 +1852,7 @@ leaflet(tracts1990) %>%
 
 ```
 
-```{r bronx-income-2000, include=FALSE}
+```{r queens-income-2000, include=FALSE}
 
 # Import Census Tract Data as data.frame Consult
 # nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
@@ -1863,9 +1863,9 @@ leaflet(tracts1990) %>%
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-data2000 <- read.csv(household_income_data_2000)%>%
-  filter(STATE == "New York" & GMY001 > 0)%>%
-  mutate(MedianHHIncome1999 = GMY001)%>%
+data2000 <- read.csv(household_income_data_2000) %>%
+  filter(STATE == "New York" & GMY001 > 0) %>%
+  mutate(MedianHHIncome1999 = GMY001) %>%
   select(GISJOIN,MedianHHIncome1999)
 
 # Import Census Tract Shapefile into R as SpatialPolygonsDataFrameFormat (SP Dataframe)
@@ -1888,7 +1888,7 @@ tracts2000 <- sf::st_read(dsn = census_tract_2000,
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts2000 <-
-  tracts2000 %>% filter(NHGISST == "360" & COUNTY=="005")%>%
+  tracts2000 %>% filter(NHGISST == "360" & COUNTY=="081") %>%
   merge(data2000, "GISJOIN")
 
 
@@ -1900,7 +1900,7 @@ tracts2000 <-sf::st_transform(tracts2000,  crs="+init=epsg:4326")
 
 tracts2000 <- rmapshaper::ms_simplify(tracts2000)
 
-write_rds(tracts2000, "shiny/household_income/bronx/2000/household_income_2000.rds")
+write_rds(tracts2000, "shiny/household_income/queens/2000/household_income_2000.rds")
 
 
 # Set palette color
@@ -1920,7 +1920,7 @@ leaflet(tracts2000) %>%
 
 ```
 
-```{r bronx-income-2010, include=FALSE}
+```{r queens-income-2010, include=FALSE}
 
 # Import Census Tract Data as data.frame Consult
 # nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
@@ -1931,9 +1931,9 @@ leaflet(tracts2000) %>%
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-data2010 <- read.csv(household_income_data_2010)%>%
-  filter(STATE == "New York" & JOIM001 > 0)%>%
-  mutate(MedianHHIncome2010 = JOIM001)%>%
+data2010 <- read.csv(household_income_data_2010) %>%
+  filter(STATE == "New York" & JOIM001 > 0) %>%
+  mutate(MedianHHIncome2010 = JOIM001) %>%
   select(GISJOIN,MedianHHIncome2010)
 
 # Import Census Tract Shapefile into R as SpatialPolygonsDataFrameFormat (SP Dataframe)
@@ -1956,7 +1956,7 @@ tracts2010 <- sf::st_read(dsn = census_tract_2010,
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts2010 <-
-  tracts2010 %>% filter(STATEFP10 == "36" & COUNTYFP10=="005")%>%
+  tracts2010 %>% filter(STATEFP10 == "36" & COUNTYFP10=="081") %>%
   merge(data2010, "GISJOIN")
 
 # Set projection of tracts dataset to `projection` required by leaflet
@@ -1967,7 +1967,7 @@ tracts2010 <-sf::st_transform(tracts2010,  crs="+init=epsg:4326")
 
 tracts2010 <- rmapshaper::ms_simplify(tracts2010)
 
-write_rds(tracts2010, "shiny/household_income/bronx/2010/household_income_2010.rds")
+write_rds(tracts2010, "shiny/household_income/queens/2010/household_income_2010.rds")
 
 
 # Set palette color
@@ -1984,9 +1984,6 @@ leaflet(tracts2010) %>%
 
 
 ```
-
-
-
 
 
 
