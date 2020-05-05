@@ -28,6 +28,14 @@ housing_value_1950 <- "raw-data/housingdata/1950/nhgis0028_csv/nhgis0028_ds82_19
 census_tract_housing_value_1950 <- "raw-data/housingdata/1950/nhgis0028_shape/nhgis0028_shapefile_tl2008_us_tract_1950/"
 census_tract_housing_value_1950_layers <- "US_tract_1950_conflated"
 
+housing_value_1960 <- "raw-data/housingdata/1960/nhgis0031_csv/nhgis0031_ds92_1960_tract.csv"
+census_tract_housing_value_1960 <- "raw-data/housingdata/1960/nhgis0031_shape/nhgis0031_shapefile_tl2008_us_tract_1960/"
+census_tract_housing_value_1960_layers <- "US_tract_1960_conflated"
+
+housing_value_1970 <- "raw-data/housingdata/1970/nhgis0032_csv/nhgis0032_ds95_1970_tract.csv"
+census_tract_housing_value_1970 <- "raw-data/housingdata/1970/nhgis0032_shape/nhgis0032_shapefile_tl2008_us_tract_1970/"
+census_tract_housing_value_1970_layers <- "US_tract_1970_conflated"
+
 housing_value_1980 <- "raw-data/housingdata/1980/nhgis0029_csv/nhgis0029_ds104_1980_tract.csv"
 census_tract_housing_value_1980 <- "raw-data/housingdata/1980/nhgis0029_shape/nhgis0029_shapefile_tl2008_us_tract_1980/"
 census_tract_housing_value_1980_layers <- "US_tract_1980_conflated"
@@ -35,6 +43,14 @@ census_tract_housing_value_1980_layers <- "US_tract_1980_conflated"
 housing_value_1990 <- "raw-data/housingdata/1990/nhgis0030_csv/nhgis0030_ds120_1990_tract.csv"
 census_tract_housing_value_1990 <- "raw-data/housingdata/1990/nhgis0030_shape/nhgis0030_shapefile_tl2008_us_tract_1990/"
 census_tract_housing_value_1990_layers <- "US_tract_1990_conflated"
+
+housing_value_2000 <- "raw-data/housingdata/2000/nhgis0033_csv/nhgis0033_ds151_2000_tract.csv"
+census_tract_housing_value_2000 <- "raw-data/housingdata/2000/nhgis0033_shape/nhgis0033_shapefile_tl2008_us_tract_2000/"
+census_tract_housing_value_2000_layers <- "US_tract_2000_conflated"
+
+housing_value_2010 <- "raw-data/housingdata/2010/nhgis0034_csv/nhgis0034_ds176_20105_2010_tract.csv"
+census_tract_housing_value_2010 <- "raw-data/housingdata/2010/nhgis0034_shape/nhgis0034_shapefile_tl2010_us_tract_2010/"
+census_tract_housing_value_2010_layers <- "US_tract_2010"
 
 ```
 
@@ -51,8 +67,8 @@ census_tract_housing_value_1990_layers <- "US_tract_1990_conflated"
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-data1950 <- read.csv(housing_value_1950)%>%
-  filter(STATE == "New York" & B09001 > 0)%>%
+data1950 <- read.csv(housing_value_1950) %>%
+  filter(STATE == "New York" & B09001 > 0) %>%
   mutate(HousingValue1950 = B09001)%>%
   select(GISJOIN, HousingValue1950)
 
@@ -90,7 +106,7 @@ tracts1950 <- sf::st_transform(tracts1950,  crs="+init=epsg:4326")
 
 tracts1950 <- rmapshaper::ms_simplify(tracts1950)
 
-write_rds(tracts1950, "shiny/household_income/bronx/1990/household_income_1990.rds")
+write_rds(tracts1950, "shiny/housing_value/manhattan/1950/housing_value_1950.rds")
 
 
 # Set palette color
@@ -102,10 +118,154 @@ pal <- colorNumeric("viridis", NULL)
 leaflet(tracts1950) %>%
   addTiles() %>%
   addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
-              fillColor = ~pal(MedianHHIncome1989)) %>%
-  addLegend(pal = pal, values = ~MedianHHIncome1989, opacity = 1.0)
+              fillColor = ~pal(HousingValue1950)) %>%
+  addLegend(pal = pal, values = ~HousingValue1950, opacity = 1.0)
 
 
+
+
+```
+
+```{r manhattan-housing-value-1960, include=FALSE}
+
+####1960 Census Tracts Median Family Income####
+
+## Load data
+## Create variable Median Bracket, filter out missing data
+
+tracts1960 <- read.csv(housing_value_1960, 
+                     stringsAsFactors = FALSE)%>%
+                     mutate(MedianBracket=NA)%>%
+                     filter(is.na(B7O001)==FALSE)
+
+## Get column names
+
+Brackets1960<-c(colnames(tracts1960)[11:20])
+
+## Iterate through rows
+
+for(i in 1:nrow(tracts1960)){
+  
+  ## Create DF with as many rows as families in data, labels are the name of the income bracket
+  subDF<-tibble(FakePop=rep(Brackets1960, c(tracts1960[i,11:20])))
+  
+  ## Calculate median family income
+  
+  ## Find the middle row of the new dataset, ie the median family and 
+  ## store what income bracket they fall into
+  out<-unlist(subDF[round(nrow(subDF)/2),1])
+  if(nrow(subDF)==0 | length(out)==0){next}
+  
+  ## Save in tracts1960
+  tracts1960$MedianBracket[i]<-out
+}
+
+## Convert factors to middle of range
+
+tracts1960Print <- tracts1960 %>%
+                mutate(MedianHousingValue1960=recode(MedianBracket,"B7O001"=2500,"B7O002"=6200, "B7O003"=8700,
+                                         "B7O004"=11200, "B7O005"=13700, "B7O006"=16200,
+                                         "B7O007"=18700, "B7O008"=22450, "B7O009"=29950,
+                                         "B7O010"=35000))
+## SaveRDS file
+#saveRDS(tracts1960Print, file="~/Downloads/nhgis0017_csv/1960MedianFamilyIncome_CensusTracts.RDS")
+
+tracts1960Print
+
+manhattan_housing_value_1960 <- tracts1960Print %>%
+  filter(STATE == "New York" & COUNTYA == "61" & !is.na(MedianHousingValue1960)) %>%
+  select(GISJOIN, MedianHousingValue1960)
+
+manhattan_1960_map <- sf::st_read(dsn = census_tract_1960,
+                        layer = census_tract_layers_1960)
+
+manhattan_1960_map <- manhattan_1960_map %>%
+  merge(manhattan_housing_value_1960, "GISJOIN")
+
+manhattan_1960_map <- sf::st_transform(manhattan_1960_map,  
+                                       crs="+init=epsg:4326")
+
+manhattan_1960_map <- rmapshaper::ms_simplify(manhattan_1960_map)
+
+# Set palette color
+
+write_rds(manhattan_1960_map, "shiny/housing_value/manhattan/1960/housing_value_1960.rds")
+
+pal <- colorNumeric("viridis", NULL)
+
+#  Plot the data
+
+leaflet(manhattan_1960_map) %>%
+  addTiles() %>%
+  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+              fillColor = ~pal(MedianHousingValue1960)) %>%
+  addLegend(pal = pal, values = ~MedianHousingValue1960, opacity = 1.0)
+
+
+```
+
+```{r manhattan-housing-value-1950, include=FALSE}
+
+#### Median Family Income 1970 Census Tracts####
+tracts1970 <- read.csv(household_income_data_1970, 
+                       stringsAsFactors = FALSE) %>%
+  mutate(MedianBracket=NA) %>%
+  filter(is.na(C3T001)==FALSE & C3T001>0)
+
+## Get column names
+Brackets1970<-c(colnames(tracts1970)[16:30])
+## Iterate through rows
+for(i in 1:nrow(tracts1970)){
+  
+  ## Create DF with as many rows as families
+  subDF<-tibble(FakePop=rep(Brackets1970, c(tracts1970[i,16:30])))
+  
+  ## Calculate median family income
+  out<-unlist(subDF[round(nrow(subDF)/2),1])
+  if(nrow(subDF)==0 | length(out)==0){next}
+  
+  ## Save 
+  tracts1970$MedianBracket[i]<-out
+}
+
+## Convert factors to middle of range
+tracts1970Print <- tracts1970 %>%
+  mutate(MedianIncome1970=recode(MedianBracket,"C3T001"=500,"C3T002"=1500, "C3T003"=2500,
+                             "C3T004"=3500, "C3T005"=4500, "C3T006"=5500,
+                             "C3T007"=6500, "C3T008"=7500, "C3T009"=8500,
+                             "C3T010"=9500, "C3T011"=11000, "C3T012"=13500,
+                             "C3T013"=20000, "C3T014"=37500, "C3T015"=50000))
+## SaveRDS file
+#saveRDS(tracts1970Print, file="~/Downloads/nhgis0017_csv/1970MedianFamilyIncome_CensusTracts.RDS")
+
+manhattan_household_income_1970 <- tracts1970Print %>%
+  filter(STATE == "New York" & COUNTYA == "61" & !is.na(MedianIncome1970)) %>%
+  select(GISJOIN, MedianIncome1970)
+
+manhattan_1970_map <- sf::st_read(dsn = census_tract_1970,
+                        layer = census_tract_layers_1970)
+
+manhattan_1970_map <- manhattan_1970_map %>%
+  merge(manhattan_household_income_1970, "GISJOIN")
+
+manhattan_1970_map <- sf::st_transform(manhattan_1970_map,  
+                                       crs="+init=epsg:4326")
+
+manhattan_1970_map <- rmapshaper::ms_simplify(manhattan_1970_map)
+
+# Set palette color
+
+write_rds(manhattan_1970_map, "shiny/household_income/manhattan/1970/household_income_1970.rds")
+
+pal <- colorNumeric("viridis", NULL)
+
+#  Plot the data
+
+leaflet(manhattan_1970_map) %>%
+  addTiles() %>%
+  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+              fillColor = ~pal(MedianIncome1970)) %>%
+  addLegend(pal = pal, values = ~MedianIncome1970, opacity = 1.0)
 
 
 ```
@@ -123,9 +283,9 @@ leaflet(tracts1950) %>%
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-data1980 <- read.csv(housing_value_1980)%>%
-  filter(STATE == "New York" & C8J001 > 0)%>%
-  mutate(HousingValue1980 = C8J001)%>%
+data1980 <- read.csv(housing_value_1980) %>%
+  filter(STATE == "New York" & C8J001 > 0) %>%
+  mutate(HousingValue1980 = C8J001) %>%
   select(GISJOIN, HousingValue1980)
 
 # Import Census Tract Shapefile into R as SpatialPolygonsDataFrameFormat (SP Dataframe)
@@ -190,9 +350,9 @@ leaflet(tracts1980) %>%
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-data1990 <- read.csv(housing_value_1990)%>%
-  filter(STATE == "New York" & EST001 > 0)%>%
-  mutate(HousingValue1990 = EST001)%>%
+data1990 <- read.csv(housing_value_1990) %>%
+  filter(STATE == "New York" & EST001 > 0) %>%
+  mutate(HousingValue1990 = EST001) %>%
   select(GISJOIN, HousingValue1990)
 
 # Import Census Tract Shapefile into R as SpatialPolygonsDataFrameFormat (SP Dataframe)
@@ -245,4 +405,138 @@ leaflet(tracts1990) %>%
 
 ```
 
+```{r manhattan-housing-value-2000, include=FALSE}
 
+# Coming soon
+
+# Import Census Tract Data as data.frame Consult
+# nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
+# B0F001 contains Median Income in 1949. Rename this MedianHHIncome for clarity.
+# Will need to figure out what the income variables are called for each new year
+# of data you download from the codebook that comes with each NHGIS download.
+# Select only MedianHHIncome and GISJOIN variables. GISJOIN is the variable that
+# allows you to join the census tract median income data with the shapefile
+# data. Also drop census tracts which reported 0 median income
+
+data2000 <- read.csv(housing_value_2000) %>%
+  filter(STATE == "New York" & GB7001 > 0) %>%
+  mutate(HousingValue2000 = GB7001) %>%
+  select(GISJOIN, HousingValue2000)
+
+# Import Census Tract Shapefile into R as SpatialPolygonsDataFrameFormat (SP Dataframe)
+# dsn is location of folder which contains shapefiles, (.proj, .shp etc.)
+# layer is the filename of the .shp file inside the
+# folder dsn points to. 
+
+tracts2000 <- sf::st_read(dsn = census_tract_housing_value_2000,
+                         layer = census_tract_housing_value_2000_layers)
+
+# *Select New York observations only using NHGISST variable NHGISST should be
+# consistent between census years, but you might need to double-check this if
+# you try 1960, 1970. *The NHGISST code is 360 for New York because New York's
+# FIPS code is 360. Google New York FIPS code for more information about the
+# FIPS system. *Need to have spdplyr package loaded to use tidyverse commands on
+# SpatialPolygonsDataFrame aka `filter' and 'mutate' *Join the data1950 data
+# with the MedianHHIncome variable by 'GISJOIN' so that the tract lines and
+# income data are in one object *Subset to Manhattan county, which has FIPS code
+# 061 *Can see other NY county fips codes at
+# https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
+
+tracts2000 <-
+  tracts2000 %>% filter(NHGISST == "360" & COUNTY=="061") %>%
+  merge(data2000, "GISJOIN")
+
+
+# Set projection of tracts dataset to `projection` required by leaflet
+
+tracts2000 <- sf::st_transform(tracts2000,  crs="+init=epsg:4326")
+
+# Condense size of data for faster processing
+
+tracts2000 <- rmapshaper::ms_simplify(tracts2000)
+
+write_rds(tracts2000, "shiny/housing_value/manhattan/2000/housing_value_2000.rds")
+
+
+# Set palette color
+
+pal <- colorNumeric("viridis", NULL)
+
+#  Plot the data
+
+leaflet(tracts2000) %>%
+  addTiles() %>%
+  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+              fillColor = ~pal(HousingValue2000)) %>%
+  addLegend(pal = pal, values = ~HousingValue2000, opacity = 1.0)
+
+
+```
+
+```{r manhattan-housing-value-2010, include=FALSE}
+
+# Coming soon
+
+# Import Census Tract Data as data.frame Consult
+# nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
+# B0F001 contains Median Income in 1949. Rename this MedianHHIncome for clarity.
+# Will need to figure out what the income variables are called for each new year
+# of data you download from the codebook that comes with each NHGIS download.
+# Select only MedianHHIncome and GISJOIN variables. GISJOIN is the variable that
+# allows you to join the census tract median income data with the shapefile
+# data. Also drop census tracts which reported 0 median income
+
+data2010 <- read.csv(housing_value_2010) %>%
+  filter(STATE == "New York" & JTIE001 > 0) %>%
+  mutate(HousingValue2010 = JTIE001) %>%
+  select(GISJOIN, HousingValue2010)
+
+# Import Census Tract Shapefile into R as SpatialPolygonsDataFrameFormat (SP Dataframe)
+# dsn is location of folder which contains shapefiles, (.proj, .shp etc.)
+# layer is the filename of the .shp file inside the
+# folder dsn points to. 
+
+tracts2010 <- sf::st_read(dsn = census_tract_housing_value_2010,
+                         layer = census_tract_housing_value_2010_layers)
+
+# *Select New York observations only using NHGISST variable NHGISST should be
+# consistent between census years, but you might need to double-check this if
+# you try 1960, 1970. *The NHGISST code is 360 for New York because New York's
+# FIPS code is 360. Google New York FIPS code for more information about the
+# FIPS system. *Need to have spdplyr package loaded to use tidyverse commands on
+# SpatialPolygonsDataFrame aka `filter' and 'mutate' *Join the data1950 data
+# with the MedianHHIncome variable by 'GISJOIN' so that the tract lines and
+# income data are in one object *Subset to Manhattan county, which has FIPS code
+# 061 *Can see other NY county fips codes at
+# https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
+
+tracts2010 <-
+  tracts2010 %>% filter(STATEFP10 == "36" & COUNTYFP10=="061") %>%
+  merge(data2010, "GISJOIN")
+
+
+# Set projection of tracts dataset to `projection` required by leaflet
+
+tracts2010 <- sf::st_transform(tracts2010,  crs="+init=epsg:4326")
+
+# Condense size of data for faster processing
+
+tracts2010 <- rmapshaper::ms_simplify(tracts2010)
+
+write_rds(tracts2010, "shiny/housing_value/manhattan/2010/housing_value_2010.rds")
+
+
+# Set palette color
+
+pal <- colorNumeric("viridis", NULL)
+
+#  Plot the data
+
+leaflet(tracts2010) %>%
+  addTiles() %>%
+  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+              fillColor = ~pal(HousingValue2010)) %>%
+  addLegend(pal = pal, values = ~HousingValue2010, opacity = 1.0)
+
+
+```
