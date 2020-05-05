@@ -176,8 +176,8 @@ manhattan_housing_value_1960 <- tracts1960Print %>%
   filter(STATE == "New York" & COUNTYA == "61" & !is.na(MedianHousingValue1960)) %>%
   select(GISJOIN, MedianHousingValue1960)
 
-manhattan_1960_map <- sf::st_read(dsn = census_tract_1960,
-                        layer = census_tract_layers_1960)
+manhattan_1960_map <- sf::st_read(dsn = census_tract_housing_value_1960,
+                        layer = census_tract_housing_value_1960_layers)
 
 manhattan_1960_map <- manhattan_1960_map %>%
   merge(manhattan_housing_value_1960, "GISJOIN")
@@ -204,21 +204,22 @@ leaflet(manhattan_1960_map) %>%
 
 ```
 
-```{r manhattan-housing-value-1950, include=FALSE}
+```{r manhattan-housing-value-1970, include=FALSE}
 
 #### Median Family Income 1970 Census Tracts####
-tracts1970 <- read.csv(household_income_data_1970, 
+
+tracts1970 <- read.csv(housing_value_1970, 
                        stringsAsFactors = FALSE) %>%
   mutate(MedianBracket=NA) %>%
-  filter(is.na(C3T001)==FALSE & C3T001>0)
+  filter(is.na(CG7001)==FALSE & CG7001>0)
 
 ## Get column names
-Brackets1970<-c(colnames(tracts1970)[16:30])
+Brackets1970<-c(colnames(tracts1970)[16:26])
 ## Iterate through rows
 for(i in 1:nrow(tracts1970)){
   
   ## Create DF with as many rows as families
-  subDF<-tibble(FakePop=rep(Brackets1970, c(tracts1970[i,16:30])))
+  subDF<-tibble(FakePop=rep(Brackets1970, c(tracts1970[i,16:26])))
   
   ## Calculate median family income
   out<-unlist(subDF[round(nrow(subDF)/2),1])
@@ -230,23 +231,24 @@ for(i in 1:nrow(tracts1970)){
 
 ## Convert factors to middle of range
 tracts1970Print <- tracts1970 %>%
-  mutate(MedianIncome1970=recode(MedianBracket,"C3T001"=500,"C3T002"=1500, "C3T003"=2500,
-                             "C3T004"=3500, "C3T005"=4500, "C3T006"=5500,
-                             "C3T007"=6500, "C3T008"=7500, "C3T009"=8500,
-                             "C3T010"=9500, "C3T011"=11000, "C3T012"=13500,
-                             "C3T013"=20000, "C3T014"=37500, "C3T015"=50000))
+  mutate(MedianHousingValue1970=recode(MedianBracket,"CG7001"=2500,"CG7002"=6250, "CG7003"=8750,
+                             "CG7004"=11250, "CG7005"=13750, "CG7006"=16250,
+                             "CG7007"=18750, "CG7008"=22500, "CG7009"=30000,
+                             "CG7010"=42500, "CG7011"=50000))
 ## SaveRDS file
 #saveRDS(tracts1970Print, file="~/Downloads/nhgis0017_csv/1970MedianFamilyIncome_CensusTracts.RDS")
 
-manhattan_household_income_1970 <- tracts1970Print %>%
-  filter(STATE == "New York" & COUNTYA == "61" & !is.na(MedianIncome1970)) %>%
-  select(GISJOIN, MedianIncome1970)
+tracts1970Print
 
-manhattan_1970_map <- sf::st_read(dsn = census_tract_1970,
-                        layer = census_tract_layers_1970)
+manhattan_housing_value_1970 <- tracts1970Print %>%
+  filter(STATE == "New York" & COUNTYA == "61" & !is.na(MedianHousingValue1970)) %>%
+  select(GISJOIN, MedianHousingValue1970)
+
+manhattan_1970_map <- sf::st_read(dsn = census_tract_housing_value_1970,
+                        layer = census_tract_housing_value_1970_layers)
 
 manhattan_1970_map <- manhattan_1970_map %>%
-  merge(manhattan_household_income_1970, "GISJOIN")
+  merge(manhattan_housing_value_1970, "GISJOIN")
 
 manhattan_1970_map <- sf::st_transform(manhattan_1970_map,  
                                        crs="+init=epsg:4326")
@@ -255,7 +257,7 @@ manhattan_1970_map <- rmapshaper::ms_simplify(manhattan_1970_map)
 
 # Set palette color
 
-write_rds(manhattan_1970_map, "shiny/household_income/manhattan/1970/household_income_1970.rds")
+write_rds(manhattan_1970_map, "shiny/housing_value/manhattan/1970/housing_value_1970.rds")
 
 pal <- colorNumeric("viridis", NULL)
 
@@ -264,8 +266,8 @@ pal <- colorNumeric("viridis", NULL)
 leaflet(manhattan_1970_map) %>%
   addTiles() %>%
   addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
-              fillColor = ~pal(MedianIncome1970)) %>%
-  addLegend(pal = pal, values = ~MedianIncome1970, opacity = 1.0)
+              fillColor = ~pal(MedianHousingValue1970)) %>%
+  addLegend(pal = pal, values = ~MedianHousingValue1970, opacity = 1.0)
 
 
 ```
