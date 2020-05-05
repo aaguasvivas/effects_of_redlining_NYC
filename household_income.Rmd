@@ -2135,7 +2135,7 @@ leaflet(queens_1960_map) %>%
 
 ```
 
-```{r queens-income-1970, include=FALSE}
+```{r staten-island-income-1970, include=FALSE}
 
 #### Median Family Income 1970 Census Tracts####
 
@@ -2170,30 +2170,30 @@ tracts1970Print <-tracts1970 %>%
 ## SaveRDS file
 #saveRDS(tracts1970Print, file="~/Downloads/nhgis0017_csv/1970MedianFamilyIncome_CensusTracts.RDS")
 
-queens_household_income_1970 <- tracts1970Print %>%
-  filter(STATE == "New York" & COUNTYA == "81" & !is.na(MedianIncome1970)) %>%
+staten_island_household_income_1970 <- tracts1970Print %>%
+  filter(STATE == "New York" & COUNTYA == "85" & !is.na(MedianIncome1970)) %>%
   select(GISJOIN, MedianIncome1970)
 
-queens_1970_map <- sf::st_read(dsn = census_tract_1970,
+staten_island_1970_map <- sf::st_read(dsn = census_tract_1970,
                         layer = census_tract_layers_1970)
 
-queens_1970_map <- queens_1970_map %>%
-  merge(queens_household_income_1970, "GISJOIN")
+staten_island_1970_map <- staten_island_1970_map %>%
+  merge(staten_island_household_income_1970, "GISJOIN")
 
-queens_1970_map <- sf::st_transform(queens_1970_map,  
+staten_island_1970_map <- sf::st_transform(staten_island_1970_map,  
                                        crs="+init=epsg:4326")
 
-queens_1970_map <- rmapshaper::ms_simplify(queens_1970_map)
+staten_island_1970_map <- rmapshaper::ms_simplify(staten_island_1970_map)
 
 # Set palette color
 
-write_rds(queens_1970_map, "shiny/household_income/queens/1970/household_income_1970.rds")
+write_rds(staten_island_1970_map, "shiny/household_income/staten_island/1970/household_income_1970.rds")
 
 pal <- colorNumeric("viridis", NULL)
 
 #  Plot the data
 
-leaflet(queens_1970_map) %>%
+leaflet(staten_island_1970_map) %>%
   addTiles() %>%
   addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
               fillColor = ~pal(MedianIncome1970)) %>%
@@ -2202,7 +2202,7 @@ leaflet(queens_1970_map) %>%
 
 ```
 
-```{r queens-income-1980, include=FALSE}
+```{r staten-island-income-1980, include=FALSE}
 
 # Import Census Tract Data as data.frame Consult
 # nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
@@ -2213,7 +2213,7 @@ leaflet(queens_1970_map) %>%
 # allows you to join the census tract median income data with the shapefile
 # data. Also drop census tracts which reported 0 median income
 
-queensdata1980 <- 
+staten_island_data1980 <- 
   read.csv(household_income_data_1980) %>%
   filter(STATE == "New York" & DIE001 > 0) %>%
   mutate(MedianHHIncome1979 = DIE001) %>%
@@ -2239,8 +2239,8 @@ tracts1980 <- sf::st_read(dsn = census_tract_1980,
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts1980 <-
-  tracts1980 %>% filter(NHGISST == "360" & COUNTY=="081")%>%
-  merge(queensdata1980, "GISJOIN")
+  tracts1980 %>% filter(NHGISST == "360" & COUNTY=="085")%>%
+  merge(staten_island_data1980, "GISJOIN")
 
 
 # Set projection of tracts dataset to `projection` required by leaflet
@@ -2251,7 +2251,7 @@ tracts1980 <- sf::st_transform(tracts1980, crs="+init=epsg:4326")
 
 tracts1980 <- rmapshaper::ms_simplify(tracts1980)
 
-write_rds(tracts1980, "shiny/household_income/queens/1980/household_income_1980.rds")
+write_rds(tracts1980, "shiny/household_income/staten_island/1980/household_income_1980.rds")
 
 # Set palette color
 
@@ -2269,7 +2269,7 @@ leaflet(tracts1980) %>%
 
 ```
 
-```{r queens-income-1990, include=FALSE}
+```{r staten-island-income-1990, include=FALSE}
 
 # Import Census Tract Data as data.frame Consult
 # nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
@@ -2305,7 +2305,7 @@ tracts1990 <- sf::st_read(dsn = census_tract_1990,
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts1990 <-
-  tracts1990 %>% filter(NHGISST == "360" & COUNTY=="081") %>%
+  tracts1990 %>% filter(NHGISST == "360" & COUNTY=="085") %>%
   merge(data1990, "GISJOIN")
 
 
@@ -2317,7 +2317,7 @@ tracts1990 <- sf::st_transform(tracts1990,  crs="+init=epsg:4326")
 
 tracts1990 <- rmapshaper::ms_simplify(tracts1990)
 
-write_rds(tracts1990, "shiny/household_income/queens/1990/household_income_1990.rds")
+write_rds(tracts1990, "shiny/household_income/staten_island/1990/household_income_1990.rds")
 
 
 # Set palette color
@@ -2336,7 +2336,7 @@ leaflet(tracts1990) %>%
 
 ```
 
-```{r queens-income-2000, include=FALSE}
+```{r staten-island-income-2000, include=FALSE}
 
 # Import Census Tract Data as data.frame Consult
 # nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
@@ -2372,7 +2372,7 @@ tracts2000 <- sf::st_read(dsn = census_tract_2000,
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts2000 <-
-  tracts2000 %>% filter(NHGISST == "360" & COUNTY=="081") %>%
+  tracts2000 %>% filter(NHGISST == "360" & COUNTY=="085") %>%
   merge(data2000, "GISJOIN")
 
 
@@ -2384,7 +2384,7 @@ tracts2000 <-sf::st_transform(tracts2000,  crs="+init=epsg:4326")
 
 tracts2000 <- rmapshaper::ms_simplify(tracts2000)
 
-write_rds(tracts2000, "shiny/household_income/queens/2000/household_income_2000.rds")
+write_rds(tracts2000, "shiny/household_income/staten_island/2000/household_income_2000.rds")
 
 
 # Set palette color
@@ -2404,7 +2404,7 @@ leaflet(tracts2000) %>%
 
 ```
 
-```{r queens-income-2010, include=FALSE}
+```{r staten-island-income-2010, include=FALSE}
 
 # Import Census Tract Data as data.frame Consult
 # nhgis0013_ds82_1950_tract_codebook.txt codebook file to determine that column
@@ -2440,7 +2440,7 @@ tracts2010 <- sf::st_read(dsn = census_tract_2010,
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts2010 <-
-  tracts2010 %>% filter(STATEFP10 == "36" & COUNTYFP10=="081") %>%
+  tracts2010 %>% filter(STATEFP10 == "36" & COUNTYFP10=="085") %>%
   merge(data2010, "GISJOIN")
 
 # Set projection of tracts dataset to `projection` required by leaflet
@@ -2451,7 +2451,7 @@ tracts2010 <-sf::st_transform(tracts2010,  crs="+init=epsg:4326")
 
 tracts2010 <- rmapshaper::ms_simplify(tracts2010)
 
-write_rds(tracts2010, "shiny/household_income/queens/2010/household_income_2010.rds")
+write_rds(tracts2010, "shiny/household_income/staten_island/2010/household_income_2010.rds")
 
 
 # Set palette color
