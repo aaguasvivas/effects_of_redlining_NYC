@@ -386,7 +386,7 @@ server <- function(input, output) {
             addTiles() %>%
             addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
                         fillColor = ~pal(y)) %>%
-            addLegend(pal = pal, values = ~y, opacity = 1.0)
+            addLegend(pal = pal, values = ~y, opacity = 1.0, title = "Median Household Income")
         
     })
     
@@ -425,103 +425,125 @@ server <- function(input, output) {
             addTiles() %>%
             addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
                         fillColor = ~pal(y)) %>%
-            addLegend(pal = pal, values = ~y, opacity = 1.0)
+            addLegend(pal = pal, values = ~y, opacity = 1.0, title = "Median Household Income")
         
     }) 
     
     output$brooklyn_household_income_1950 <- renderLeaflet({
+        
         if(input$year == 1950) {
+            income_data = brooklyn_household_income_1950
             y = brooklyn_household_income_1950$MedianHHIncome1949
         }
         if(input$year == 1960) {
+            income_data = brooklyn_household_income_1960
             y = brooklyn_household_income_1960$MedianIncome1960
         }
         if(input$year == 1970) {
+            income_data = brooklyn_household_income_1970
             y = brooklyn_household_income_1970$MedianIncome1970
         }
         if(input$year == 1980) {
+            income_data = brooklyn_household_income_1980
             y = brooklyn_household_income_1980$MedianHHIncome1979
         }
         if(input$year == 1990) {
+            income_data = brooklyn_household_income_1990
             y = brooklyn_household_income_1990$MedianHHIncome1989
         }
         if(input$year == 2000) {
+            income_data = brooklyn_household_income_2000
             y = brooklyn_household_income_2000$MedianHHIncome1999
         }
         if(input$year == 2010) {
+            income_data = brooklyn_household_income_2010
             y = brooklyn_household_income_2010$MedianHHIncome2010
         }
         
         pal <- colorNumeric("viridis", NULL)
-        leaflet(brooklyn_household_income_1950) %>%
+        leaflet(income_data) %>%
             addTiles() %>%
             addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
                         fillColor = ~pal(y)) %>%
-            addLegend(pal = pal, values = ~y, opacity = 1.0)
+            addLegend(pal = pal, values = ~y, opacity = 1.0, title = "Median Household Income")
         
     }) 
     
     output$queens_household_income_1950 <- renderLeaflet({
         if(input$year == 1950) {
+            income_data = queens_household_income_1950
             y = queens_household_income_1950$MedianHHIncome1949
         }
         if(input$year == 1960) {
+            income_data = queens_household_income_1960
             y = queens_household_income_1960$MedianIncome1960
         }
         if(input$year == 1970) {
+            income_data = queens_household_income_1970
             y = queens_household_income_1970$MedianIncome1970
         }
         if(input$year == 1980) {
+            income_data = queens_household_income_1980
             y = queens_household_income_1980$MedianHHIncome1979
         }
         if(input$year == 1990) {
+            income_data = queens_household_income_1990
             y = queens_household_income_1990$MedianHHIncome1989
         }
         if(input$year == 2000) {
+            income_data = queens_household_income_2000
             y = queens_household_income_2000$MedianHHIncome1999
         }
         if(input$year == 2010) {
+            income_data = queens_household_income_2010
             y = queens_household_income_2010$MedianHHIncome2010
         }
         
         pal <- colorNumeric("viridis", NULL)
-        leaflet(queens_household_income_1950) %>%
+        leaflet(income_data) %>%
             addTiles() %>%
             addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
                         fillColor = ~pal(y)) %>%
-            addLegend(pal = pal, values = ~y, opacity = 1.0)
+            addLegend(pal = pal, values = ~y, opacity = 1.0, title = "Median Household Income")
         
     }) 
     
     output$staten_island_household_income_1950 <- renderLeaflet({
         if(input$year == 1950) {
+            income_data = staten_island_household_income_1950
             y = staten_island_household_income_1950$MedianHHIncome1949
         }
         if(input$year == 1960) {
+            income_data = staten_island_household_income_1960
             y = staten_island_household_income_1960$MedianIncome1960
         }
         if(input$year == 1970) {
+            income_data = staten_island_household_income_1970
             y = staten_island_household_income_1970$MedianIncome1970
         }
         if(input$year == 1980) {
+            income_data = staten_island_household_income_1980
             y = staten_island_household_income_1980$MedianHHIncome1979
         }
         if(input$year == 1990) {
+            income_data = staten_island_household_income_1990
             y = staten_island_household_income_1990$MedianHHIncome1989
         }
         if(input$year == 2000) {
+            income_data = staten_island_household_income_2000
             y = staten_island_household_income_2000$MedianHHIncome1999
         }
         if(input$year == 2010) {
+            income_data = staten_island_household_income_2010
             y = staten_island_household_income_2010$MedianHHIncome2010
         }
         
         pal <- colorNumeric("viridis", NULL)
-        leaflet(staten_island_household_income_1950) %>%
+        leaflet(income_data) %>%
             addTiles() %>%
             addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
                         fillColor = ~pal(y)) %>%
-            addLegend(pal = pal, values = ~y, opacity = 1.0)
+            addLegend(pal = pal, values = ~y, opacity = 1.0, title = "Median Household Income")
         
     }) 
     
@@ -561,9 +583,165 @@ server <- function(input, output) {
             addTiles() %>%
             addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
                         fillColor = ~pal(y)) %>%
-            addLegend(pal = pal, values = ~y, opacity = 1.0)
+            addLegend(pal = pal, values = ~y, opacity = 1.0, title = "Median Housing Value")
         
     }) 
+    
+    output$bronx_housing_value_1950 <- renderLeaflet({
+        if(input$year_housing_value == 1950) {
+            borough_and_year = bronx_housing_value_1950
+            y = bronx_housing_value_1950$HousingValue1950
+        }
+        if(input$year_housing_value == 1960) {
+            borough_and_year = bronx_housing_value_1960
+            y = bronx_housing_value_1960$MedianHousingValue1960
+        }
+        if(input$year_housing_value == 1970) {
+            borough_and_year = bronx_housing_value_1970
+            y = bronx_housing_value_1970$MedianHousingValue1970
+        }
+        if(input$year_housing_value == 1980) {
+            borough_and_year = bronx_housing_value_1980
+            y = bronx_housing_value_1980$HousingValue1980
+        }
+        if(input$year_housing_value == 1990) {
+            borough_and_year = bronx_housing_value_1990
+            y = bronx_housing_value_1990$HousingValue1990
+        }
+        if(input$year_housing_value == 2000) {
+            borough_and_year = bronx_housing_value_2000
+            y = bronx_housing_value_2000$HousingValue2000
+        }
+        if(input$year_housing_value == 2010) {
+            borough_and_year = bronx_housing_value_2010
+            y = bronx_housing_value_2010$HousingValue2010
+        }
+        
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(borough_and_year) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(y)) %>%
+            addLegend(pal = pal, values = ~y, opacity = 1.0, title = "Median Housing Value")
+        
+    }) 
+    
+    output$brooklyn_housing_value_1950 <- renderLeaflet({
+        if(input$year_housing_value == 1950) {
+            borough_and_year = brooklyn_housing_value_1950
+            y = brooklyn_housing_value_1950$HousingValue1950
+        }
+        if(input$year_housing_value == 1960) {
+            borough_and_year = brooklyn_housing_value_1960
+            y = brooklyn_housing_value_1960$MedianHousingValue1960
+        }
+        if(input$year_housing_value == 1970) {
+            borough_and_year = brooklyn_housing_value_1970
+            y = brooklyn_housing_value_1970$MedianHousingValue1970
+        }
+        if(input$year_housing_value == 1980) {
+            borough_and_year = brooklyn_housing_value_1980
+            y = brooklyn_housing_value_1980$HousingValue1980
+        }
+        if(input$year_housing_value == 1990) {
+            borough_and_year = brooklyn_housing_value_1990
+            y = brooklyn_housing_value_1990$HousingValue1990
+        }
+        if(input$year_housing_value == 2000) {
+            borough_and_year = brooklyn_housing_value_2000
+            y = brooklyn_housing_value_2000$HousingValue2000
+        }
+        if(input$year_housing_value == 2010) {
+            borough_and_year = brooklyn_housing_value_2010
+            y = brooklyn_housing_value_2010$HousingValue2010
+        }
+        
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(borough_and_year) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(y)) %>%
+            addLegend(pal = pal, values = ~y, opacity = 1.0, title = "Median Housing Value")
+        
+    }) 
+    
+    output$queens_housing_value_1950 <- renderLeaflet({
+        if(input$year_housing_value == 1950) {
+            borough_and_year = queens_housing_value_1950
+            y = queens_housing_value_1950$HousingValue1950
+        }
+        if(input$year_housing_value == 1960) {
+            borough_and_year = queens_housing_value_1960
+            y = queens_housing_value_1960$MedianHousingValue1960
+        }
+        if(input$year_housing_value == 1970) {
+            borough_and_year = queens_housing_value_1970
+            y = queens_housing_value_1970$MedianHousingValue1970
+        }
+        if(input$year_housing_value == 1980) {
+            borough_and_year = queens_housing_value_1980
+            y = queens_housing_value_1980$HousingValue1980
+        }
+        if(input$year_housing_value == 1990) {
+            borough_and_year = queens_housing_value_1990
+            y = queens_housing_value_1990$HousingValue1990
+        }
+        if(input$year_housing_value == 2000) {
+            borough_and_year = queens_housing_value_2000
+            y = queens_housing_value_2000$HousingValue2000
+        }
+        if(input$year_housing_value == 2010) {
+            borough_and_year = queens_housing_value_2010
+            y = queens_housing_value_2010$HousingValue2010
+        }
+        
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(borough_and_year) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(y)) %>%
+            addLegend(pal = pal, values = ~y, opacity = 1.0, title = "Median Housing Value")
+        
+    }) 
+    
+    output$staten_island_housing_value_1950 <- renderLeaflet({
+        if(input$year_housing_value == 1950) {
+            borough_and_year = staten_island_housing_value_1950
+            y = staten_island_housing_value_1950$HousingValue1950
+        }
+        if(input$year_housing_value == 1960) {
+            borough_and_year = staten_island_housing_value_1960
+            y = staten_island_housing_value_1960$MedianHousingValue1960
+        }
+        if(input$year_housing_value == 1970) {
+            borough_and_year = staten_island_housing_value_1970
+            y = staten_island_housing_value_1970$MedianHousingValue1970
+        }
+        if(input$year_housing_value == 1980) {
+            borough_and_year = staten_island_housing_value_1980
+            y = staten_island_housing_value_1980$HousingValue1980
+        }
+        if(input$year_housing_value == 1990) {
+            borough_and_year = staten_island_housing_value_1990
+            y = staten_island_housing_value_1990$HousingValue1990
+        }
+        if(input$year_housing_value == 2000) {
+            borough_and_year = staten_island_housing_value_2000
+            y = staten_island_housing_value_2000$HousingValue2000
+        }
+        if(input$year_housing_value == 2010) {
+            borough_and_year = staten_island_housing_value_2010
+            y = staten_island_housing_value_2010$HousingValue2010
+        }
+        
+        pal <- colorNumeric("viridis", NULL)
+        leaflet(borough_and_year) %>%
+            addTiles() %>%
+            addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                        fillColor = ~pal(y)) %>%
+            addLegend(pal = pal, values = ~y, opacity = 1.0, title = "Median Housing Value")
+        
+    })
     
 }
 

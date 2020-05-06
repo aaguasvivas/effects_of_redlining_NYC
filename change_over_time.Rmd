@@ -76,8 +76,8 @@ change_over_time_bronx <- table_bronx %>%
                      labels = c("0", "250,000", "500,000", "750,000",
                                 "1,000,000", "1,250,000"))
 
-# ggplotly(change_over_time_bronx) %>%
-#  animation_opts(frame = ~year)
+ggplotly(change_over_time_bronx) %>%
+  animation_opts(frame = ~year)
 
 bronx_animated_change <- change_over_time_bronx +
   transition_reveal(year) +
