@@ -1604,7 +1604,7 @@ leaflet(tracts1950) %>%
 
 ```
 
-```{r brooklyn-housing-value-1960, include=FALSE}
+```{r queens-housing-value-1960, include=FALSE}
 
 ####1960 Census Tracts Median Family Income####
 
@@ -1650,30 +1650,30 @@ tracts1960Print <- tracts1960 %>%
 
 tracts1960Print
 
-brooklyn_housing_value_1960 <- tracts1960Print %>%
-  filter(STATE == "New York" & COUNTYA == "47" & !is.na(MedianHousingValue1960)) %>%
+queens_housing_value_1960 <- tracts1960Print %>%
+  filter(STATE == "New York" & COUNTYA == "81" & !is.na(MedianHousingValue1960)) %>%
   select(GISJOIN, MedianHousingValue1960)
 
-brooklyn_1960_map <- sf::st_read(dsn = census_tract_housing_value_1960,
+queens_1960_map <- sf::st_read(dsn = census_tract_housing_value_1960,
                         layer = census_tract_housing_value_1960_layers)
 
-brooklyn_1960_map <- brooklyn_1960_map %>%
-  merge(brooklyn_housing_value_1960, "GISJOIN")
+queens_1960_map <- queens_1960_map %>%
+  merge(queens_housing_value_1960, "GISJOIN")
 
-brooklyn_1960_map <- sf::st_transform(brooklyn_1960_map,  
+queens_1960_map <- sf::st_transform(queens_1960_map,  
                                        crs="+init=epsg:4326")
 
-brooklyn_1960_map <- rmapshaper::ms_simplify(brooklyn_1960_map)
+queens_1960_map <- rmapshaper::ms_simplify(queens_1960_map)
 
 # Set palette color
 
-write_rds(brooklyn_1960_map, "shiny/housing_value/brooklyn/1960/housing_value_1960.rds")
+write_rds(queens_1960_map, "shiny/housing_value/queens/1960/housing_value_1960.rds")
 
 pal <- colorNumeric("viridis", NULL)
 
 #  Plot the data
 
-leaflet(brooklyn_1960_map) %>%
+leaflet(queens_1960_map) %>%
   addTiles() %>%
   addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
               fillColor = ~pal(MedianHousingValue1960)) %>%
@@ -1682,7 +1682,7 @@ leaflet(brooklyn_1960_map) %>%
 
 ```
 
-```{r brooklyn-housing-value-1970, include=FALSE}
+```{r queens-housing-value-1970, include=FALSE}
 
 #### Median Family Income 1970 Census Tracts####
 
@@ -1718,30 +1718,30 @@ tracts1970Print <- tracts1970 %>%
 
 tracts1970Print
 
-brooklyn_housing_value_1970 <- tracts1970Print %>%
-  filter(STATE == "New York" & COUNTYA == "47" & !is.na(MedianHousingValue1970)) %>%
+queens_housing_value_1970 <- tracts1970Print %>%
+  filter(STATE == "New York" & COUNTYA == "81" & !is.na(MedianHousingValue1970)) %>%
   select(GISJOIN, MedianHousingValue1970)
 
-brooklyn_1970_map <- sf::st_read(dsn = census_tract_housing_value_1970,
+queens_1970_map <- sf::st_read(dsn = census_tract_housing_value_1970,
                         layer = census_tract_housing_value_1970_layers)
 
-brooklyn_1970_map <- brooklyn_1970_map %>%
-  merge(brooklyn_housing_value_1970, "GISJOIN")
+queens_1970_map <- queens_1970_map %>%
+  merge(queens_housing_value_1970, "GISJOIN")
 
-brooklyn_1970_map <- sf::st_transform(brooklyn_1970_map,  
+queens_1970_map <- sf::st_transform(queens_1970_map,  
                                        crs="+init=epsg:4326")
 
-brooklyn_1970_map <- rmapshaper::ms_simplify(brooklyn_1970_map)
+queens_1970_map <- rmapshaper::ms_simplify(queens_1970_map)
 
 # Set palette color
 
-write_rds(brooklyn_1970_map, "shiny/housing_value/brooklyn/1970/housing_value_1970.rds")
+write_rds(queens_1970_map, "shiny/housing_value/queens/1970/housing_value_1970.rds")
 
 pal <- colorNumeric("viridis", NULL)
 
 #  Plot the data
 
-leaflet(brooklyn_1970_map) %>%
+leaflet(queens_1970_map) %>%
   addTiles() %>%
   addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
               fillColor = ~pal(MedianHousingValue1970)) %>%
@@ -1750,7 +1750,7 @@ leaflet(brooklyn_1970_map) %>%
 
 ```
 
-```{r brooklyn-housing-value-1980, include=FALSE}
+```{r queens-housing-value-1980, include=FALSE}
 
 # Coming soon
 
@@ -1788,7 +1788,7 @@ tracts1980 <- sf::st_read(dsn = census_tract_housing_value_1980,
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts1980 <-
-  tracts1980 %>% filter(NHGISST == "360" & COUNTY=="047") %>%
+  tracts1980 %>% filter(NHGISST == "360" & COUNTY=="081") %>%
   merge(data1980, "GISJOIN")
 
 
@@ -1800,7 +1800,7 @@ tracts1980 <- sf::st_transform(tracts1980,  crs="+init=epsg:4326")
 
 tracts1980 <- rmapshaper::ms_simplify(tracts1980)
 
-write_rds(tracts1980, "shiny/housing_value/brooklyn/1980/housing_value_1980.rds")
+write_rds(tracts1980, "shiny/housing_value/queens/1980/housing_value_1980.rds")
 
 
 # Set palette color
@@ -1817,7 +1817,7 @@ leaflet(tracts1980) %>%
 
 ```
 
-```{r brooklyn-housing-value-1990, include=FALSE}
+```{r queens-housing-value-1990, include=FALSE}
 
 # Coming soon
 
@@ -1855,7 +1855,7 @@ tracts1990 <- sf::st_read(dsn = census_tract_housing_value_1990,
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts1990 <-
-  tracts1990 %>% filter(NHGISST == "360" & COUNTY=="047") %>%
+  tracts1990 %>% filter(NHGISST == "360" & COUNTY=="081") %>%
   merge(data1990, "GISJOIN")
 
 
@@ -1867,7 +1867,7 @@ tracts1990 <- sf::st_transform(tracts1990,  crs="+init=epsg:4326")
 
 tracts1990 <- rmapshaper::ms_simplify(tracts1990)
 
-write_rds(tracts1990, "shiny/housing_value/brooklyn/1990/housing_value_1990.rds")
+write_rds(tracts1990, "shiny/housing_value/queens/1990/housing_value_1990.rds")
 
 
 # Set palette color
@@ -1885,7 +1885,7 @@ leaflet(tracts1990) %>%
 
 ```
 
-```{r brooklyn-housing-value-2000, include=FALSE}
+```{r queens-housing-value-2000, include=FALSE}
 
 # Coming soon
 
@@ -1923,7 +1923,7 @@ tracts2000 <- sf::st_read(dsn = census_tract_housing_value_2000,
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts2000 <-
-  tracts2000 %>% filter(NHGISST == "360" & COUNTY=="047") %>%
+  tracts2000 %>% filter(NHGISST == "360" & COUNTY=="081") %>%
   merge(data2000, "GISJOIN")
 
 
@@ -1935,7 +1935,7 @@ tracts2000 <- sf::st_transform(tracts2000,  crs="+init=epsg:4326")
 
 tracts2000 <- rmapshaper::ms_simplify(tracts2000)
 
-write_rds(tracts2000, "shiny/housing_value/brooklyn/2000/housing_value_2000.rds")
+write_rds(tracts2000, "shiny/housing_value/queens/2000/housing_value_2000.rds")
 
 
 # Set palette color
@@ -1953,7 +1953,7 @@ leaflet(tracts2000) %>%
 
 ```
 
-```{r brooklyn-housing-value-2010, include=FALSE}
+```{r queens-housing-value-2010, include=FALSE}
 
 # Coming soon
 
@@ -1991,7 +1991,7 @@ tracts2010 <- sf::st_read(dsn = census_tract_housing_value_2010,
 # https://simple.wikipedia.org/wiki/List_of_counties_in_New_York
 
 tracts2010 <-
-  tracts2010 %>% filter(STATEFP10 == "36" & COUNTYFP10=="047") %>%
+  tracts2010 %>% filter(STATEFP10 == "36" & COUNTYFP10=="081") %>%
   merge(data2010, "GISJOIN")
 
 
@@ -2003,7 +2003,7 @@ tracts2010 <- sf::st_transform(tracts2010,  crs="+init=epsg:4326")
 
 tracts2010 <- rmapshaper::ms_simplify(tracts2010)
 
-write_rds(tracts2010, "shiny/housing_value/brooklyn/2010/housing_value_2010.rds")
+write_rds(tracts2010, "shiny/housing_value/queens/2010/housing_value_2010.rds")
 
 
 # Set palette color
