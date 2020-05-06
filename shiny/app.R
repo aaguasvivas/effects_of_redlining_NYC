@@ -59,8 +59,45 @@ staten_island_household_income_1990 <- read_rds("household_income/staten_island/
 staten_island_household_income_2000 <- read_rds("household_income/staten_island/2000/household_income_2000.rds")
 staten_island_household_income_2010 <- read_rds("household_income/staten_island/2010/household_income_2010.rds")
 
+manhattan_housing_value_1950 <- read_rds("housing_value/manhattan/1950/housing_value_1950.rds")
+manhattan_housing_value_1960 <- read_rds("housing_value/manhattan/1960/housing_value_1960.rds")
+manhattan_housing_value_1970 <- read_rds("housing_value/manhattan/1970/housing_value_1970.rds")
 manhattan_housing_value_1980 <- read_rds("housing_value/manhattan/1980/housing_value_1980.rds")
 manhattan_housing_value_1990 <- read_rds("housing_value/manhattan/1990/housing_value_1990.rds")
+manhattan_housing_value_2000 <- read_rds("housing_value/manhattan/2000/housing_value_2000.rds")
+manhattan_housing_value_2010 <- read_rds("housing_value/manhattan/2010/housing_value_2010.rds")
+
+bronx_housing_value_1950 <- read_rds("housing_value/bronx/1950/housing_value_1950.rds")
+bronx_housing_value_1960 <- read_rds("housing_value/bronx/1960/housing_value_1960.rds")
+bronx_housing_value_1970 <- read_rds("housing_value/bronx/1970/housing_value_1970.rds")
+bronx_housing_value_1980 <- read_rds("housing_value/bronx/1980/housing_value_1980.rds")
+bronx_housing_value_1990 <- read_rds("housing_value/bronx/1990/housing_value_1990.rds")
+bronx_housing_value_2000 <- read_rds("housing_value/bronx/2000/housing_value_2000.rds")
+bronx_housing_value_2010 <- read_rds("housing_value/bronx/2010/housing_value_2010.rds")
+
+brooklyn_housing_value_1950 <- read_rds("housing_value/brooklyn/1950/housing_value_1950.rds")
+brooklyn_housing_value_1960 <- read_rds("housing_value/brooklyn/1960/housing_value_1960.rds")
+brooklyn_housing_value_1970 <- read_rds("housing_value/brooklyn/1970/housing_value_1970.rds")
+brooklyn_housing_value_1980 <- read_rds("housing_value/brooklyn/1980/housing_value_1980.rds")
+brooklyn_housing_value_1990 <- read_rds("housing_value/brooklyn/1990/housing_value_1990.rds")
+brooklyn_housing_value_2000 <- read_rds("housing_value/brooklyn/2000/housing_value_2000.rds")
+brooklyn_housing_value_2010 <- read_rds("housing_value/brooklyn/2010/housing_value_2010.rds")
+
+queens_housing_value_1950 <- read_rds("housing_value/queens/1950/housing_value_1950.rds")
+queens_housing_value_1960 <- read_rds("housing_value/queens/1960/housing_value_1960.rds")
+queens_housing_value_1970 <- read_rds("housing_value/queens/1970/housing_value_1970.rds")
+queens_housing_value_1980 <- read_rds("housing_value/queens/1980/housing_value_1980.rds")
+queens_housing_value_1990 <- read_rds("housing_value/queens/1990/housing_value_1990.rds")
+queens_housing_value_2000 <- read_rds("housing_value/queens/2000/housing_value_2000.rds")
+queens_housing_value_2010 <- read_rds("housing_value/queens/2010/housing_value_2010.rds")
+
+staten_island_housing_value_1950 <- read_rds("housing_value/staten_island/1950/housing_value_1950.rds")
+staten_island_housing_value_1960 <- read_rds("housing_value/staten_island/1960/housing_value_1960.rds")
+staten_island_housing_value_1970 <- read_rds("housing_value/staten_island/1970/housing_value_1970.rds")
+staten_island_housing_value_1980 <- read_rds("housing_value/staten_island/1980/housing_value_1980.rds")
+staten_island_housing_value_1990 <- read_rds("housing_value/staten_island/1990/housing_value_1990.rds")
+staten_island_housing_value_2000 <- read_rds("housing_value/staten_island/2000/housing_value_2000.rds")
+staten_island_housing_value_2010 <- read_rds("housing_value/staten_island/2010/housing_value_2010.rds")
 
 
 # Define UI for application, we ask to display the image dist_plot as output.
