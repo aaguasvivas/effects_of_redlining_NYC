@@ -24,11 +24,47 @@ library(gganimate)
 library(spdplyr)
 library(rmapshaper)
 
+housing_value_1950 <- "raw-data/housingdata/1950/nhgis0028_csv/nhgis0028_ds82_1950_tract.csv"
+census_tract_housing_value_1950 <- "raw-data/housingdata/1950/nhgis0028_shape/nhgis0028_shapefile_tl2008_us_tract_1950/"
+census_tract_housing_value_1950_layers <- "US_tract_1950_conflated"
+
+household_income_data_1950 <- "raw-data/householdincomedata/1950/nhgis0021_csv/nhgis0021_ds82_1950_tract.csv"
+census_tract_1950 <- "raw-data/householdincomedata/1950/nhgis0021_shape/nhgis0021_shapefile_tl2008_us_tract_1950/"
+census_tract_layers_1950 <- "US_tract_1950_conflated"
+
+
+
 
 ```
 
 ```{r regressions, include=FALSE}
 
 # Coming soon
+
+HouseholdIncome1950 <- read.csv(household_income_data_1950)%>%
+  filter(STATE == "New York" & B0F001 > 0) %>%
+  mutate(MedianHHIncome1949 = B0F001) %>%
+  select(GISJOIN,MedianHHIncome1949)
+
+HousingValue1950 <- read.csv(housing_value_1950) %>%
+  filter(STATE == "New York" & B09001 > 0) %>%
+  mutate(HousingValue1950 = B09001)%>%
+  select(GISJOIN, HousingValue1950)
+
+tables_combined <- inner_join(x = HouseholdIncome1950, y = HousingValue1950, by = "GISJOIN")
+
+tracts1950 <- sf::st_read(dsn = census_tract_1950,
+                          layer = census_tract_layers_1950)
+
+tracts1950 <-
+  tracts1950 %>% filter(NHGISST == "360" & COUNTY == "061") %>%
+  full_join(x = tracts1950, y = HouseholdIncome1950, by = "GISJOIN")
+
+tracts1950 <- 
+  tracts1950 %>%
+  merge(HousingValue1950, "GISJOIN")
+
+
+
 
 ```

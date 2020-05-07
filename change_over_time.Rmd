@@ -58,10 +58,10 @@ change_over_time_bronx <- table_bronx %>%
   transform(population = as.numeric(gsub(",", "", population))) %>%
   mutate_if(is.numeric, ~replace(., is.na(.), 0)) %>%
   ggplot(aes(x = year, y = population, color = race)) +
-  geom_line() +
-  geom_point(aes(frame = year),position = position_jitter(width = 0.3, 
+  geom_line(aes(frame = year)) +
+  geom_point(position = position_jitter(width = 0.3, 
                                        height = 0), 
-            alpha = 0.5) +
+             alpha = 0.5) +
   labs(title = "Change in Demographics Over Time in the Bronx, New York",
        subtitle = "Data Webscrapped From Wikipedia. From 1910-2010.",
        x = "Year",
@@ -76,15 +76,19 @@ change_over_time_bronx <- table_bronx %>%
                      labels = c("0", "250,000", "500,000", "750,000",
                                 "1,000,000", "1,250,000"))
 
-ggplotly(change_over_time_bronx) %>%
-  animation_opts(frame = ~year)
+#ggplotly(change_over_time_bronx) %>%
+#  animation_opts(frame = 500,
+#                 mode = 'immediate')
 
 bronx_animated_change <- change_over_time_bronx +
   transition_reveal(year) +
   labs(title = "Change in Demographics Over Time in the Bronx. Year: {as.integer(frame_along)}")
 
+bronx_animated_change
+
 # anim_save("bronx_change_animation.gif", path = "shiny/change_over_time_graphs/", 
 #          animation = bronx_animated_change)
+
 
 ```
 
