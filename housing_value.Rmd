@@ -253,7 +253,7 @@ manhattan_1970_map <- manhattan_1970_map %>%
 manhattan_1970_map <- sf::st_transform(manhattan_1970_map,  
                                        crs="+init=epsg:4326")
 
-manhattan_1970_map <- rmapshaper::ms_simplify(manhattan_1970_map)
+# manhattan_1970_map <- rmapshaper::ms_simplify(manhattan_1970_map)
 
 # Set palette color
 

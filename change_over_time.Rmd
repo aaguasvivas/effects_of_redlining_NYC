@@ -58,10 +58,10 @@ change_over_time_bronx <- table_bronx %>%
   transform(population = as.numeric(gsub(",", "", population))) %>%
   mutate_if(is.numeric, ~replace(., is.na(.), 0)) %>%
   ggplot(aes(x = year, y = population, color = race)) +
-  geom_line(aes(frame = year)) +
-  geom_point(position = position_jitter(width = 0.3, 
-                                        height = 0), 
-             alpha = 0.5) +
+  geom_line() +
+  geom_point(aes(frame = year),position = position_jitter(width = 0.3, 
+                                       height = 0), 
+            alpha = 0.5) +
   labs(title = "Change in Demographics Over Time in the Bronx, New York",
        subtitle = "Data Webscrapped From Wikipedia. From 1910-2010.",
        x = "Year",
