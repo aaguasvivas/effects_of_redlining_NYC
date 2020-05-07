@@ -32,7 +32,9 @@ household_income_data_1950 <- "raw-data/householdincomedata/1950/nhgis0021_csv/n
 census_tract_1950 <- "raw-data/householdincomedata/1950/nhgis0021_shape/nhgis0021_shapefile_tl2008_us_tract_1950/"
 census_tract_layers_1950 <- "US_tract_1950_conflated"
 
-
+race_data_1950 <- "raw-data/racedata/1950/nhgis0035_csv/nhgis0035_ds82_1950_tract.csv"
+race_tracts <- "raw-data/racedata/1950/nhgis0035_shape/nhgis0035_shapefile_tl2008_us_tract_1950/"
+race_layers <- "US_tract_1950_conflated"
 
 
 ```
@@ -41,29 +43,25 @@ census_tract_layers_1950 <- "US_tract_1950_conflated"
 
 # Coming soon
 
-HouseholdIncome1950 <- read.csv(household_income_data_1950)%>%
+HouseholdIncome1950 <- read.csv(household_income_data_1950) %>%
   filter(STATE == "New York" & B0F001 > 0) %>%
   mutate(MedianHHIncome1949 = B0F001) %>%
-  select(GISJOIN,MedianHHIncome1949)
+  select(GISJOIN, STATE, COUNTYA ,MedianHHIncome1949)
 
 HousingValue1950 <- read.csv(housing_value_1950) %>%
   filter(STATE == "New York" & B09001 > 0) %>%
   mutate(HousingValue1950 = B09001)%>%
-  select(GISJOIN, HousingValue1950)
+  select(GISJOIN, STATE, COUNTYA, HousingValue1950)
+
+RaceData1950 <- read.csv(race_data_1950) %>%
+  filter(STATE == "New York" & (!is.na(B0J001) | !is.na(B0J002) | !is.na(B0J003))) %>%
+  rename(c(White = B0J001, Black = B0J002, OtherNonWhite = B0J003)) %>%
+  select(GISJOIN, STATE, COUNTYA, White, Black, OtherNonWhite)
+  
 
 tables_combined <- inner_join(x = HouseholdIncome1950, y = HousingValue1950, by = "GISJOIN")
 
-tracts1950 <- sf::st_read(dsn = census_tract_1950,
-                          layer = census_tract_layers_1950)
-
-tracts1950 <-
-  tracts1950 %>% filter(NHGISST == "360" & COUNTY == "061") %>%
-  full_join(x = tracts1950, y = HouseholdIncome1950, by = "GISJOIN")
-
-tracts1950 <- 
-  tracts1950 %>%
-  merge(HousingValue1950, "GISJOIN")
-
+final_join <- inner_join(x = tables_combined, y = RaceData1950, by = "GISJOIN")
 
 
 
