@@ -99,10 +99,12 @@ staten_island_housing_value_1990 <- read_rds("housing_value/staten_island/1990/h
 staten_island_housing_value_2000 <- read_rds("housing_value/staten_island/2000/housing_value_2000.rds")
 staten_island_housing_value_2010 <- read_rds("housing_value/staten_island/2010/housing_value_2010.rds")
 
+picture <- "about/githubprofile.jpg"
+
 
 # Define UI for application, we ask to display the image dist_plot as output.
 
-ui <- fluidPage(theme = shinytheme("sandstone"),
+ui <- fluidPage(theme = shinytheme("cosmo"),
     navbarPage("Effects of Redlining in NYC", 
               
 tabPanel("Redlining Maps",
@@ -111,33 +113,25 @@ tabPanel("Redlining Maps",
                tabPanel("Manhattan", 
                         h4("Redlining in Manhattan 1937"),
                         br(),
-                        leafletOutput("nymanhattan1937"),
-                        br(),
-                        h5("Writing coming soon")),
+                        leafletOutput("nymanhattan1937")),
                tabPanel("Bronx", 
                         h4("Redlining in Bronx 1938"),
                         br(),
-                        leafletOutput("nybronx1938"),
-                        br(),
-                        h5("Writing coming soon")),
+                        leafletOutput("nybronx1938")),
                tabPanel("Brooklyn", 
                         h4("Redlining in Brooklyn 1938"),
                         br(),
-                        leafletOutput("nybrooklyn1938"),
-                        br(),
-                        h5("Writing coming soon")),
+                        leafletOutput("nybrooklyn1938")),
                tabPanel("Queens", 
                         h4("Redlining in Queens 1938"),
                         br(),
-                        leafletOutput("nyqueens1938"),
-                        br(),
-                        h5("Writing coming soon")),
+                        leafletOutput("nyqueens1938")),
                tabPanel("Staten Island", 
                         h4("Redlining in Staten Island 1940"),
                         br(),
-                        leafletOutput("nystatenisland1940"),
-                        br(),
-                        h5("Writing coming soon")))
+                        leafletOutput("nystatenisland1940"))),
+           h3("Things to Point Out:"),
+           h4("- More less redlining")
 )),
 
 
@@ -155,7 +149,9 @@ tabPanel("Median Household Income",
          sidebarPanel(
              sliderInput("year", "Year:",  
                          min = 1950, max = 2010, value = 1950, 
-                         step = 10, sep = "", animate = TRUE)
+                         step = 10, sep = "", animate = TRUE),
+             h4("NOTE:"),
+             h5("- 1970 bad")
          ),
          column(7,
                 tabsetPanel(
@@ -174,18 +170,21 @@ tabPanel("Median Household Income",
                              leafletOutput("queens_household_income_1950")),
                     tabPanel("Staten Island", 
                              h4("Median Household Income in Staten Island"),
-                             leafletOutput("staten_island_household_income_1950"))
-                    
-                
-))),
+                             leafletOutput("staten_island_household_income_1950"))), 
+                h3("Findings:"),
+                h4("- If we look at ")
+                )
+         ),
 
 
 
-tabPanel("Housing Value",
+tabPanel("Median Housing Value",
          sidebarPanel(
              sliderInput("year_housing_value", "Year:",  
                          min = 1950, max = 2010, value = 1950, 
-                         step = 10, sep = "", animate = TRUE)
+                         step = 10, sep = "", animate = TRUE),
+             h4("NOTE:"),
+             h5("- 1970 bad")
          ),
          column(7,
                 tabsetPanel(
@@ -204,10 +203,11 @@ tabPanel("Housing Value",
                              leafletOutput("queens_housing_value_1950")),
                     tabPanel("Staten Island", 
                              h4("Median Housing Value in Staten Island"),
-                             leafletOutput("staten_island_housing_value_1950"))
-                    
-                    
-))),
+                             leafletOutput("staten_island_housing_value_1950"))),
+                h3("Findings:"),
+                h4("- If we look at ")
+                )
+         ),
 
 
 tabPanel("Predictions and Findings"
@@ -224,13 +224,27 @@ tabPanel("Background Information"
 
 
 tabPanel("About Me",
-         h1("About"),
-         h5("Contact me at aaguasvivas@college.harvard.edu or connect with me on LinkedIn", 
-            a("HERE", href="https://www.linkedin.com/in/aaguasvivas/")),
+         HTML("<center href='https://ibb.co/5vrC2s3'><img src='https://i.ibb.co/GkWGFCD/githubprofile.jpg' alt='githubprofile' width='325' height='400' border='0'></center>"),
+         br(),
+         h2("About Me"),
+         h5("- Hello everyone! My name is Adelson Aguasvivas. I am a Junior at Harvard College, from the Dominican Republic/New York studying Computer Science, with a secondary in Ethnicity, Migration and Rights. I have a strong passion for software engineering, data science and education, and hope to keep working in these types of projects in future."),
+         h5("- The desire to work on this project came out of personal experiences. Having moved from the Dominican Republic, to live in the Bronx with my grandmother, and having gone to middle school there for a short period of time, before moving to Newburgh, New York, made me wonder why the borough was set up in the way it was. Why was it that so many of my friends and their families seemed to be pushed to the margins of the city, facing poverty and generations of struggle? In the next few years, I would go on to learn about redlining and its effects, seeing the consequences of this racist and discriminatory practice, first hand. I have always wanted to visualize what these redlining maps looked like, and how it affected the five New York City boroughs over time, from 1950 to 2010. This is what I set my goal to be for this project. My hope is that this project will make information about this practice more readily and widely available, as well as provide a visualization tool, to actually see, in a map, the areas affected."),
+         h2("Contact Information"),
+         br(),
+         h5("- Email: aaguasvivas@college.harvard.edu"),
+         br(),
+         h5("- Connect with me on LinkedIn here: ", 
+            a("https://www.linkedin.com/in/aaguasvivas/", href="https://www.linkedin.com/in/aaguasvivas/")),
+         br(),
+         h5("- Checkout my Github Profile: ", 
+            a("https://github.com/aaguasvivas", href="https://github.com/aaguasvivas")),
+         br(),
+         h5("- To directly access the Github Repo, click here: ", 
+            a(" https://github.com/aaguasvivas/effects_of_redlining_NYC", href="https://github.com/aaguasvivas/effects_of_redlining_NYC")),
          br())
+            
 
-               )
-)
+))
 
 # Define server logic, where we output our dist_plot, using renderImage and
 # normalizePath, to find the file path, using list which returns a list with the
