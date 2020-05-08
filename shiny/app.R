@@ -132,19 +132,26 @@ tabPanel("Redlining Maps",
                         leafletOutput("nystatenisland1940"))),
            h3("Things to Point Out:"),
            h4("- Meaning of the different colors: 'Green' means 'Best', 'Blue' means 'Still Desirable', 'Yellow' means 'Definitely Declining', 'Red' means 'Dangerous/Hazardous'."),
+           h4("- There is one area in the Bronx Redlining Map colored as 'Orange' because in the actual maps, from the late 1930s, it was deemed as worse than 'Red' or seen as worse than 'Dangerous'. It was essentially telling mortgage lenders to stay away from this one area at all costs. "),
            h4("- Communities of color, with increasing or high percentages of Black and Latinx populations are way more likely to be labeled as 'Definitely Declining' or 'Dangerous/Hazardous'."), 
            h4("- Most boroughs experience strong, discriminatory and racist forms of redlining, except for Staten Island, for which we see an increase in the White population after 1940-1950, as seen in the 'Change in Demographics Tab'. This is because, like many suburbs, Staten Island becomes one of the main destinations to move to, because as seen in the map, a lot of its territory had properties that were not immediately affected by redlining, compared to places like the Bronx, Queens or Brooklyn, with increasing numbers of Black/Latinx people, which causes most of these boroughs to be labeled in those 'Red' and 'Yellow' colors."),
-           h4("- If we compare these 'Redlining Maps' to other maps, like 'Median Household Income' or 'Median Housing Value', and we focus on the areas that are 'Yellow' or 'Red', you will notice that regardless of how much time passes, in general,  these areas remain the most poor, with the lowest housing value. For example, look at the 'Green' area of Manhattan around 'Central Park', and look at how both the median household income and median housing value stay up at an Upper Middle Class level, while the area in 'Red' right above it and around it remains at that lower bracket, in terms of median household income and housing value, over time, disproportionately living in poverty.")
+           h4("- If we compare these 'Redlining Maps' to other maps, like 'Median Household Income' or 'Median Housing Value', and we focus on the areas that are 'Yellow' or 'Red', you will notice that regardless of how much time passes, in general, these areas remain the most poor, with the lowest housing value. For example, look at the 'Green' area of Manhattan around 'Central Park', and look at how both the median household income and median housing value stay up at an Upper Middle Class level, while the area in 'Red' right above it and around it remains at that lower bracket, in terms of median household income and housing value, over time, disproportionately living in poverty."),
+           h4(strong("- 91 percent of areas classified as 'Best', colored in 'Green' in the late 1930s and early 1940s, remain middle-to-upper-income today, and 85 percent of them are still predominantly white."))
 )),
 
 
 tabPanel("Change in Demographics Over Time",
+         column(7,
          tabsetPanel(
              tabPanel("Manhattan", imageOutput("manhattan_change_animation")),
              tabPanel("Bronx", imageOutput("bronx_change_animation")),
              tabPanel("Brooklyn", imageOutput("brooklyn_change_animation")),
              tabPanel("Queens", imageOutput("queens_change_animation")),
-             tabPanel("Staten Island", imageOutput("staten_island_change_animation")))
+             tabPanel("Staten Island", imageOutput("staten_island_change_animation")))),
+         column(5,
+                h3("Trends:"),
+                h4("- For every borough, except for Staten Island, we see a steep decline in the White population after the years 1940 and 1950. This is almost immediately after redlining starts to take place. This is known as 'White Flight'. 'White Flight' is the mass migration of White people, usually from urban areas to more suburban cities/towns, based mostly on the fact that these urban areas are becoming more racially and ethnoculturally diverse. Racial, Ethnic and Religious minorities were often denied housing and business loans, as the Underwriting Manual of the Federal Housing Administration, said that 'incompatible racial groups should not be permitted to live in the same communities'. With this mass migration, White people have the ability to acquire wealth by investing in housing and business, effectively taking these resources and capital away from these urban areas, only worsening the wealth gap between them."),
+                h4("- As seen in the plot, from 1940 to 1950, there is this quick spike in the White population in Staten Island, as 'White Flight' begins to happen, with Staten Island being one of the places they move to. The opposite happens in the plots for the other boroughs where we a steep decline in the 'White Population' after the years Redlining begins to happen, with the drop usually occurring between 1940 and 1960, for all of them."))
 
 ),
 
@@ -154,7 +161,8 @@ tabPanel("Median Household Income",
                          min = 1950, max = 2010, value = 1950, 
                          step = 10, sep = "", animate = TRUE),
              h4("NOTE:"),
-             h5("- 1970 bad")
+             h5("- The Median Household Income is in US Dollars, but not adjusted for inflation, as time passes, meaning that the values are the actual incomes for the time, but would be different in today's dollars."),
+             h5("- For these Median Household Incomes, the values range from 'Poor', being the lower values, to 'Middle' to 'Upper Middle' Class, being the higher values in the spectrum.")
          ),
          column(7,
                 tabsetPanel(
