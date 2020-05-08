@@ -1,6 +1,8 @@
 # Effects of Redlining in New York City
 Final Project Repository for GOV1005: Data, in which I explore the effects of redlining in New York City during the mid-20th century, and how it affects household income and housing value from 1950 to 2010.
 
+Shiny App found [HERE](https://adelson-aguasvivas.shinyapps.io/effects_of_redlining_nyc/): [https://adelson-aguasvivas.shinyapps.io/effects_of_redlining_nyc/](https://adelson-aguasvivas.shinyapps.io/effects_of_redlining_nyc/)
+
 ## Project Rationale
 
 HCMST 2017 is intriguing as one of the few datasets from a comprehensive, representative survey of U.S. literate couples.
