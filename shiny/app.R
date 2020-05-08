@@ -7,11 +7,22 @@
 #    http://shiny.rstudio.com/
 #
 
-library(shiny)
-library(leaflet)
 library(tidyverse)
-library(shinythemes)
+library(janitor)
 library(sf)
+library(rgdal)
+library(tidycensus)
+library(scales)
+library(gt)
+library(gridExtra)
+library(lemon)
+library(rvest)
+library(magrittr)
+library(leaflet)
+library(gganimate)
+library(spdplyr)
+library(rmapshaper)
+library(broom)
 
 nymanhattan1937 <- read_rds("redlining_maps/manhattan/nymanhattan1937.rds")
 nybronx1938 <- read_rds("redlining_maps/bronx/nybronx1938.rds")
@@ -99,7 +110,8 @@ staten_island_housing_value_1990 <- read_rds("housing_value/staten_island/1990/h
 staten_island_housing_value_2000 <- read_rds("housing_value/staten_island/2000/housing_value_2000.rds")
 staten_island_housing_value_2010 <- read_rds("housing_value/staten_island/2010/housing_value_2010.rds")
 
-picture <- "about/githubprofile.jpg"
+bronx_graph <- read_rds("regression_data/Bronx/bronx_graph.rds")
+manhattan_graph <- read_rds ("regression_data/Manhattan/manhattan_graph.rds")
 
 
 # Define UI for application, we ask to display the image dist_plot as output.
@@ -233,8 +245,10 @@ tabPanel("Predictions and Findings",
          column(8,
                 tabsetPanel(
                     tabPanel("Manhattan", 
+                             plotOutput("manhattan_graph_output", width = 850, height = 600)
                              ),
-                    tabPanel("Bronx", 
+                    tabPanel("Bronx",
+                             plotOutput("bronx_graph_output", width = 850, height = 600)
                              ),
                     tabPanel("Brooklyn", 
                              ),
@@ -806,6 +820,15 @@ server <- function(input, output) {
                         fillColor = ~pal(y)) %>%
             addLegend(pal = pal, values = ~y, opacity = 1.0, title = "Median Housing Value")
         
+    })
+    
+    
+    output$bronx_graph_output <- renderPlot({
+        bronx_graph 
+    })
+    
+    output$manhattan_graph_output <- renderPlot({
+        manhattan_graph 
     })
     
 }
