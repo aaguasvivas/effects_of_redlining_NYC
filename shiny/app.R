@@ -230,12 +230,7 @@ tabPanel("Median Housing Value",
 
 
 tabPanel("Predictions and Findings",
-         sidebarPanel(
-             sliderInput("year_regressions", "Year:",  
-                         min = 1950, max = 2010, value = 1950, 
-                         step = 10, sep = "", animate = TRUE),
-         ),
-         column(7,
+         column(8,
                 tabsetPanel(
                     tabPanel("Manhattan", 
                              ),
@@ -247,7 +242,10 @@ tabPanel("Predictions and Findings",
                              ),
                     tabPanel("Staten Island", 
                              )),
-         )
+         ),
+         column(4,
+                h3("Findings:"),
+                h4("We see that"))
          
 ),
 

@@ -23,30 +23,48 @@ library(leaflet)
 library(gganimate)
 library(spdplyr)
 library(rmapshaper)
+library(broom)
 
 housing_value_1950 <- "raw-data/housingdata/1950/nhgis0028_csv/nhgis0028_ds82_1950_tract.csv"
-census_tract_housing_value_1950 <- "raw-data/housingdata/1950/nhgis0028_shape/nhgis0028_shapefile_tl2008_us_tract_1950/"
-census_tract_housing_value_1950_layers <- "US_tract_1950_conflated"
-
 household_income_data_1950 <- "raw-data/householdincomedata/1950/nhgis0021_csv/nhgis0021_ds82_1950_tract.csv"
-census_tract_1950 <- "raw-data/householdincomedata/1950/nhgis0021_shape/nhgis0021_shapefile_tl2008_us_tract_1950/"
-census_tract_layers_1950 <- "US_tract_1950_conflated"
-
 race_data_1950 <- "raw-data/racedata/1950/nhgis0035_csv/nhgis0035_ds82_1950_tract.csv"
-race_tracts <- "raw-data/racedata/1950/nhgis0035_shape/nhgis0035_shapefile_tl2008_us_tract_1950/"
-race_layers <- "US_tract_1950_conflated"
+
+household_income_data_1960 <- "raw-data/householdincomedata/1960/nhgis0022_csv/nhgis0022_ds92_1960_tract.csv"
+housing_value_1960 <- "raw-data/housingdata/1960/nhgis0031_csv/nhgis0031_ds92_1960_tract.csv"
+race_data_1960 <- "raw-data/racedata/1960/nhgis0036_csv/nhgis0036_ds92_1960_tract.csv"
+
+household_income_data_1970 <- "raw-data/householdincomedata/1970/nhgis0023_csv/nhgis0023_ds99_1970_tract.csv"
+housing_value_1970 <- "raw-data/housingdata/1970/nhgis0032_csv/nhgis0032_ds95_1970_tract.csv"
+race_data_1970 <- "raw-data/racedata/1970/nhgis0037_csv/nhgis0037_ds98_1970_tract.csv"
+
+household_income_data_1980 <- "raw-data/householdincomedata/1980/nhgis0024_csv/nhgis0024_ds107_1980_tract.csv"
+housing_value_1980 <- "raw-data/housingdata/1980/nhgis0029_csv/nhgis0029_ds104_1980_tract.csv"
+race_data_1980 <- "raw-data/racedata/1980/nhgis0038_csv/nhgis0038_ds104_1980_tract.csv"
+
+
+household_income_data_1990 <- "raw-data/householdincomedata/1990/nhgis0025_csv/nhgis0025_ds123_1990_tract.csv"
+housing_value_1990 <- "raw-data/housingdata/1990/nhgis0030_csv/nhgis0030_ds120_1990_tract.csv"
+race_data_1990 <- "raw-data/racedata/1990/nhgis0039_csv/nhgis0039_ds120_1990_tract.csv"
+
+household_income_data_2000 <- "raw-data/householdincomedata/2000/nhgis0026_csv/nhgis0026_ds151_2000_tract.csv"
+housing_value_2000 <- "raw-data/housingdata/2000/nhgis0033_csv/nhgis0033_ds151_2000_tract.csv"
+race_data_2000 <- "raw-data/racedata/2000/nhgis0040_csv/nhgis0040_ds146_2000_tract.csv"
+
+household_income_data_2010 <- "raw-data/householdincomedata/2010/nhgis0027_csv/nhgis0027_ds176_20105_2010_tract.csv"
+housing_value_2010 <- "raw-data/housingdata/2010/nhgis0034_csv/nhgis0034_ds176_20105_2010_tract.csv"
+race_data_2010 <- "raw-data/racedata/2010/nhgis0041_csv/nhgis0041_ds172_2010_tract.csv"
 
 
 ```
 
-```{r regressions, include=FALSE}
+```{r bronx-1950-regressions, include=FALSE}
 
 # Coming soon
 
 HouseholdIncome1950 <- read.csv(household_income_data_1950) %>%
   filter(STATE == "New York" & B0F001 > 0) %>%
   mutate(MedianHHIncome1949 = B0F001) %>%
-  select(GISJOIN, STATE, COUNTYA ,MedianHHIncome1949)
+  select(GISJOIN, STATE, COUNTYA, MedianHHIncome1949)
 
 HousingValue1950 <- read.csv(housing_value_1950) %>%
   filter(STATE == "New York" & B09001 > 0) %>%
@@ -59,10 +77,396 @@ RaceData1950 <- read.csv(race_data_1950) %>%
   select(GISJOIN, STATE, COUNTYA, White, Black, OtherNonWhite)
   
 
-tables_combined <- inner_join(x = HouseholdIncome1950, y = HousingValue1950, by = "GISJOIN")
+tables_combined <- inner_join(x = HouseholdIncome1950, y = HousingValue1950, by = c("GISJOIN", "STATE", "COUNTYA"))
 
-final_join <- inner_join(x = tables_combined, y = RaceData1950, by = "GISJOIN")
+final_join_bronx_1950 <- inner_join(x = tables_combined, y = RaceData1950, 
+                         by = c("GISJOIN", "STATE", "COUNTYA")) %>%
+  filter(COUNTYA == "5") %>%
+  mutate(TotalPop = White + Black + OtherNonWhite, 
+         WhitePct = White/TotalPop*100, 
+         NonWhitePct = (Black + OtherNonWhite)/TotalPop*100)
+
+results_1950 <- lm(data = final_join_bronx_1950, HousingValue1950 ~ MedianHHIncome1949 * NonWhitePct) %>%
+  tidy(conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  slice(4) %>%
+  mutate(year = 1950, borough = "Bronx") 
+
+results_1950
+
+# Use bind_rows()
 
 
 
 ```
+
+```{r bronx-1960-regression, include=FALSE}
+# BRONX 1960
+
+
+tracts1960<-read.csv(household_income_data_1960, 
+                     stringsAsFactors = FALSE)%>%
+                     mutate(MedianBracket=NA)%>%
+                     filter(is.na(B8W001)==FALSE)
+
+## Get column names
+
+Brackets1960<-c(colnames(tracts1960)[11:23])
+
+## Iterate through rows
+
+for(i in 1:nrow(tracts1960)){
+  
+  ## Create DF with as many rows as families in data, labels are the name of the income bracket
+  subDF<-tibble(FakePop=rep(Brackets1960, c(tracts1960[i,11:23])))
+  
+  ## Calculate median family income
+  
+  ## Find the middle row of the new dataset, ie the median family and 
+  ## store what income bracket they fall into
+  out<-unlist(subDF[round(nrow(subDF)/2),1])
+  if(nrow(subDF)==0 | length(out)==0){next}
+  
+  ## Save in tracts1960
+  tracts1960$MedianBracket[i]<-out
+}
+
+## Convert factors to middle of range
+
+tracts1960Print <- tracts1960%>%
+                mutate(MedianIncome1960=recode(MedianBracket,"B8W001"=500,"B8W002"=1500, "B8W003"=2500,
+                                         "B8W004"=3500, "B8W005"=4500, "B8W006"=5500,
+                                         "B8W007"=6500, "B8W008"=7500, "B8W009"=8500,
+                                         "B8W010"=9500, "B8W011"=12500, "B8W012"=20000,
+                                         "B8W013"=25000))
+## SaveRDS file
+#saveRDS(tracts1960Print, file="~/Downloads/nhgis0017_csv/1960MedianFamilyIncome_CensusTracts.RDS")
+
+tracts1960Print
+
+
+HouseholdIncome1960 <- tracts1960Print %>%
+  filter(STATE == "New York" & !is.na(MedianIncome1960)) %>%
+  select(GISJOIN, STATE, COUNTYA, MedianIncome1960)
+
+
+tracts1960 <- read.csv(housing_value_1960, 
+                     stringsAsFactors = FALSE)%>%
+                     mutate(MedianBracket=NA)%>%
+                     filter(is.na(B7O001)==FALSE)
+
+## Get column names
+
+Brackets1960<-c(colnames(tracts1960)[11:20])
+
+## Iterate through rows
+
+for(i in 1:nrow(tracts1960)){
+  
+  ## Create DF with as many rows as families in data, labels are the name of the income bracket
+  subDF<-tibble(FakePop=rep(Brackets1960, c(tracts1960[i,11:20])))
+  
+  ## Calculate median family income
+  
+  ## Find the middle row of the new dataset, ie the median family and 
+  ## store what income bracket they fall into
+  out<-unlist(subDF[round(nrow(subDF)/2),1])
+  if(nrow(subDF)==0 | length(out)==0){next}
+  
+  ## Save in tracts1960
+  tracts1960$MedianBracket[i]<-out
+}
+
+## Convert factors to middle of range
+
+tracts1960Print <- tracts1960 %>%
+                mutate(MedianHousingValue1960=recode(MedianBracket,"B7O001"=2500,"B7O002"=6200, "B7O003"=8700,
+                                         "B7O004"=11200, "B7O005"=13700, "B7O006"=16200,
+                                         "B7O007"=18700, "B7O008"=22450, "B7O009"=29950,
+                                         "B7O010"=35000))
+## SaveRDS file
+#saveRDS(tracts1960Print, file="~/Downloads/nhgis0017_csv/1960MedianFamilyIncome_CensusTracts.RDS")
+
+tracts1960Print
+
+HousingValue1960 <- tracts1960Print %>%
+  filter(STATE == "New York" & !is.na(MedianHousingValue1960)) %>%
+  select(GISJOIN, STATE, COUNTYA, MedianHousingValue1960)
+
+
+
+RaceData1960 <- read.csv(race_data_1960) %>%
+  filter(STATE == "New York" & (!is.na(B7B001) | !is.na(B7B002) | !is.na(B7B003))) %>%
+  rename(c(White = B7B001, Black = B7B002, OtherNonWhite = B7B003)) %>%
+  select(GISJOIN, STATE, COUNTYA, White, Black, OtherNonWhite)
+  
+
+tables_combined <- inner_join(x = HouseholdIncome1960, y = HousingValue1960, by = c("GISJOIN", "STATE", "COUNTYA"))
+
+tables_combined
+
+final_join_bronx_1960 <- inner_join(x = tables_combined, y = RaceData1960, 
+                         by = c("GISJOIN", "STATE", "COUNTYA")) %>%
+  filter(COUNTYA == "5") %>%
+  mutate(TotalPop = White + Black + OtherNonWhite, 
+         WhitePct = White/TotalPop*100, 
+         NonWhitePct = (Black + OtherNonWhite)/TotalPop*100)
+
+final_join_bronx_1960
+
+results_1960 <- lm(data = final_join_bronx_1960, MedianHousingValue1960 ~ MedianIncome1960 * NonWhitePct) %>%
+  tidy(conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  slice(4) %>%
+  mutate(year = 1960, borough = "Bronx") 
+
+bronx_first_bind <- bind_rows(results_1950, results_1960)
+
+bronx_first_bind
+
+```
+
+```{r bronx-1970-regressions, include=FALSE}
+
+tracts1970 <- read.csv(household_income_data_1970, 
+                       stringsAsFactors = FALSE) %>%
+  mutate(MedianBracket=NA) %>%
+  filter(is.na(C3T001)==FALSE & C3T001>0)
+
+## Get column names
+Brackets1970<-c(colnames(tracts1970)[16:30])
+## Iterate through rows
+for(i in 1:nrow(tracts1970)){
+  
+  ## Create DF with as many rows as families
+  subDF<-tibble(FakePop=rep(Brackets1970, c(tracts1970[i,16:30])))
+  
+  ## Calculate median family income
+  out<-unlist(subDF[round(nrow(subDF)/2),1])
+  if(nrow(subDF)==0 | length(out)==0){next}
+  
+  ## Save 
+  tracts1970$MedianBracket[i]<-out
+}
+
+## Convert factors to middle of range
+tracts1970Print <- tracts1970 %>%
+  mutate(MedianIncome1970=recode(MedianBracket,"C3T001"=500,"C3T002"=1500, "C3T003"=2500,
+                             "C3T004"=3500, "C3T005"=4500, "C3T006"=5500,
+                             "C3T007"=6500, "C3T008"=7500, "C3T009"=8500,
+                             "C3T010"=9500, "C3T011"=11000, "C3T012"=13500,
+                             "C3T013"=20000, "C3T014"=37500, "C3T015"=50000))
+## SaveRDS file
+#saveRDS(tracts1970Print, file="~/Downloads/nhgis0017_csv/1970MedianFamilyIncome_CensusTracts.RDS")
+
+HouseholdIncome1970 <- tracts1970Print %>%
+  filter(STATE == "New York" & !is.na(MedianIncome1970)) %>%
+  select(GISJOIN, STATE, COUNTYA, MedianIncome1970)
+
+
+#### Median Family Income 1970 Census Tracts####
+
+tracts1970 <- read.csv(housing_value_1970, 
+                       stringsAsFactors = FALSE) %>%
+  mutate(MedianBracket=NA) %>%
+  filter(is.na(CG7001)==FALSE & CG7001>0)
+
+## Get column names
+Brackets1970<-c(colnames(tracts1970)[16:26])
+## Iterate through rows
+for(i in 1:nrow(tracts1970)){
+  
+  ## Create DF with as many rows as families
+  subDF<-tibble(FakePop=rep(Brackets1970, c(tracts1970[i,16:26])))
+  
+  ## Calculate median family income
+  out<-unlist(subDF[round(nrow(subDF)/2),1])
+  if(nrow(subDF)==0 | length(out)==0){next}
+  
+  ## Save 
+  tracts1970$MedianBracket[i]<-out
+}
+
+## Convert factors to middle of range
+tracts1970Print <- tracts1970 %>%
+  mutate(MedianHousingValue1970=recode(MedianBracket,"CG7001"=2500,"CG7002"=6250, "CG7003"=8750,
+                             "CG7004"=11250, "CG7005"=13750, "CG7006"=16250,
+                             "CG7007"=18750, "CG7008"=22500, "CG7009"=30000,
+                             "CG7010"=42500, "CG7011"=50000))
+## SaveRDS file
+#saveRDS(tracts1970Print, file="~/Downloads/nhgis0017_csv/1970MedianFamilyIncome_CensusTracts.RDS")
+
+tracts1970Print
+
+HousingValue1970 <- tracts1970Print %>%
+  filter(STATE == "New York" & !is.na(MedianHousingValue1970)) %>%
+  select(GISJOIN, STATE, COUNTYA, MedianHousingValue1970)
+
+
+RaceData1970 <- read.csv(race_data_1970) %>%
+  filter(STATE == "New York" & (!is.na(C0X001) | !is.na(C0X002) | !is.na(C0X003))) %>%
+  rename(c(White = C0X001, Black = C0X002, OtherNonWhite = C0X003)) %>%
+  select(GISJOIN, STATE, COUNTYA, White, Black, OtherNonWhite)
+  
+
+tables_combined <- inner_join(x = HouseholdIncome1970, y = HousingValue1970, 
+                              by = c("GISJOIN", "STATE", "COUNTYA"))
+
+tables_combined
+
+final_join_bronx_1970 <- inner_join(x = tables_combined, y = RaceData1970, 
+                         by = c("GISJOIN", "STATE", "COUNTYA")) %>%
+  filter(COUNTYA == "5") %>%
+  mutate(TotalPop = White + Black + OtherNonWhite, 
+         WhitePct = White/TotalPop*100, 
+         NonWhitePct = (Black + OtherNonWhite)/TotalPop*100)
+
+final_join_bronx_1970
+
+results_1970 <- lm(data = final_join_bronx_1970, MedianHousingValue1970 ~ MedianIncome1970 * NonWhitePct) %>%
+  tidy(conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  slice(4) %>%
+  mutate(year = 1970, borough = "Bronx") 
+
+bronx_second_bind <- bind_rows(bronx_first_bind, results_1970)
+
+bronx_second_bind
+
+
+```
+
+```{r bronx-1980-regressions, include=FALSE}
+
+HouseholdIncome1980 <- 
+  read.csv(household_income_data_1980) %>%
+  filter(STATE == "New York" & DIE001 > 0) %>%
+  mutate(MedianHHIncome1979 = DIE001) %>%
+  select(GISJOIN, STATE, COUNTYA, MedianHHIncome1979)
+
+HousingValue1980 <- read.csv(housing_value_1980) %>%
+  filter(STATE == "New York" & C8J001 > 0) %>%
+  mutate(MedianHousingValue1980 = C8J001) %>%
+  select(GISJOIN, STATE, COUNTYA, MedianHousingValue1980)
+
+
+RaceData1980 <- read.csv(race_data_1980) %>%
+  filter(STATE == "New York" & (!is.na(C9D001) | 
+                                  !is.na(C9D002) | 
+                                  !is.na(C9D003) |
+                                  !is.na(C9D004) | 
+                                  !is.na(C9D005) | 
+                                  !is.na(C9D006) |
+                                  !is.na(C9D007) | 
+                                  !is.na(C9D008) | 
+                                  !is.na(C9D009) |
+                                  !is.na(C9D010) |
+                                  !is.na(C9D011) | 
+                                  !is.na(C9D012) | 
+                                  !is.na(C9D013) |
+                                  !is.na(C9D014) |
+                                  !is.na(C9D015))) %>%
+  rename(c(White = C9D001, 
+           Black = C9D002, 
+           AmericanIndian = C9D003,
+           Eskimo = C9D004, 
+           Aleut = C9D005, 
+           Japanese = C9D006,
+           Chinese = C9D007, 
+           Filipino = C9D008, 
+           Korean = C9D009,
+           AsianIndian = C9D010,
+           Vietnamese = C9D011,
+           Hawaiian = C9D012,
+           Guamanian = C9D013,
+           Samoan = C9D014,
+           Other = C9D015)) %>%
+  select(GISJOIN, STATE, COUNTYA, White:Other)
+
+RaceData1980
+  
+
+tables_combined <- inner_join(x = HouseholdIncome1980, y = HousingValue1980, 
+                              by = c("GISJOIN", "STATE", "COUNTYA"))
+
+tables_combined
+
+final_join_bronx_1980 <- inner_join(x = tables_combined, y = RaceData1980, 
+                         by = c("GISJOIN", "STATE", "COUNTYA")) %>%
+  filter(COUNTYA == "5") %>%
+  mutate(TotalPop = sum(White + Black + AmericanIndian + Eskimo + Aleut + Japanese + Chinese + Filipino + Korean + 
+                          AsianIndian + Vietnamese + Hawaiian + Guamanian + Samoan + Other), 
+         WhitePct = White/TotalPop*100, 
+         NonWhitePct = (Black + AmericanIndian + Eskimo + Aleut + Japanese + Chinese + Filipino + Korean + 
+                          AsianIndian + Vietnamese + Hawaiian + Guamanian + Samoan + Other)/TotalPop*100) %>%
+  select(GISJOIN, STATE, COUNTYA, MedianHHIncome1979, MedianHousingValue1980, TotalPop, WhitePct, NonWhitePct)
+
+final_join_bronx_1980
+
+results_1980 <- lm(data = final_join_bronx_1980, MedianHousingValue1980 ~ MedianHHIncome1979 * NonWhitePct) %>%
+  tidy(conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  slice(4) %>%
+  mutate(year = 1980, borough = "Bronx") 
+
+bronx_third_bind <- bind_rows(bronx_second_bind, results_1980)
+
+bronx_third_bind
+
+
+```
+
+```{r bronx-1990-regression, include=FALSE}
+
+HouseholdIncome1990 <- read.csv(household_income_data_1990)%>%
+  filter(STATE == "New York" & E4U001 > 0)%>%
+  mutate(MedianHHIncome1989 = E4U001)%>%
+  select(GISJOIN, STATE, COUNTYA, MedianHHIncome1989)
+
+HousingValue1990 <- read.csv(housing_value_1990) %>%
+  filter(STATE == "New York" & EST001 > 0) %>%
+  mutate(MedianHousingValue1990 = EST001) %>%
+  select(GISJOIN, STATE, COUNTYA, MedianHousingValue1990)
+
+RaceData1990 <- read.csv(race_data_1990) %>%
+  filter(STATE == "New York" & (!is.na(EUY001) | !is.na(EUY002) | 
+                                  !is.na(EUY003) | 
+                                  !is.na(EUY004) | 
+                                  !is.na(EUY005))) %>%
+  rename(c(White = EUY001, 
+           Black = EUY002, 
+           AmericanNativeIndian = EUY003,
+           AsianPacificIslander = EUY004, 
+           Other = EUY005)) %>%
+  select(GISJOIN, STATE, COUNTYA, White:Other)
+  
+
+tables_combined <- inner_join(x = HouseholdIncome1990, y = HousingValue1990, 
+                              by = c("GISJOIN", "STATE", "COUNTYA"))
+
+tables_combined
+
+final_join_bronx_1990 <- inner_join(x = tables_combined, y = RaceData1990, 
+                         by = c("GISJOIN", "STATE", "COUNTYA")) %>%
+  filter(COUNTYA == "5") %>%
+  mutate(TotalPop = White + Black + AmericanNativeIndian + AsianPacificIslander + 
+          Other, 
+         WhitePct = White/TotalPop*100, 
+         NonWhitePct = (Black + AmericanNativeIndian + AsianPacificIslander + 
+          Other)/TotalPop*100)
+
+final_join_bronx_1990
+
+results_1990 <- lm(data = final_join_bronx_1990, MedianHousingValue1990 ~ MedianHHIncome1989 * NonWhitePct) %>%
+  tidy(conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  slice(4) %>%
+  mutate(year = 1990, borough = "Bronx") 
+
+bronx_fourth_bind <- bind_rows(bronx_third_bind, results_1990)
+
+bronx_second_bind
+
+
+```
+
