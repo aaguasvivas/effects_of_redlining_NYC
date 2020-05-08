@@ -760,7 +760,7 @@ manhattan_regressions <- manhattan_final_bind %>%
   ggplot(aes(x = year, y = estimate)) +
   geom_point(color = "red") + 
   labs(x = "Year", y = "Estimate",
-       title = "How Does the Interaction of Median Household Income \nand Race Affect Housing Value in the Bronx?",
+       title = "How Does the Interaction of Median Household Income \nand Race Affect Housing Value in Manhattan?",
        subtitle = "Running a Linear Regression, Using Median Housing Value, \nwith an Interaction Between Median Household Income and Race.",
        caption = "Data from IPUMS National Historical Geographic Information System") +
   
@@ -776,6 +776,195 @@ manhattan_regressions <- manhattan_final_bind %>%
 manhattan_regressions
             
 write_rds(manhattan_regressions, "shiny/regression_data/Manhattan/manhattan_graph.rds")
+
+```
+
+```{r queens-1950-regressions}
+
+final_join_queens_1950 <- inner_join(x = tables_combined_1950, y = RaceData1950, 
+                         by = c("GISJOIN", "STATE", "COUNTYA")) %>%
+  filter(COUNTYA == "81") %>%
+  mutate(TotalPop = White + Black + OtherNonWhite, 
+         WhitePct = White/TotalPop*100, 
+         NonWhitePct = (Black + OtherNonWhite)/TotalPop*100)
+
+queens_results_1950 <- lm(data = final_join_queens_1950, HousingValue1950 ~ MedianHHIncome1949 * NonWhitePct) %>%
+  tidy(conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  slice(4) %>%
+  mutate(year = 1950, borough = "Queens") 
+
+queens_results_1950
+
+```
+
+```{r queens-1960-regressions}
+
+final_join_queens_1960 <- inner_join(x = tables_combined_1960, y = RaceData1960, 
+                         by = c("GISJOIN", "STATE", "COUNTYA")) %>%
+  filter(COUNTYA == "81") %>%
+  mutate(TotalPop = White + Black + OtherNonWhite, 
+         WhitePct = White/TotalPop*100, 
+         NonWhitePct = (Black + OtherNonWhite)/TotalPop*100)
+
+final_join_queens_1960
+
+queens_results_1960 <- lm(data = final_join_queens_1960, MedianHousingValue1960 ~ MedianIncome1960 * NonWhitePct) %>%
+  tidy(conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  slice(4) %>%
+  mutate(year = 1960, borough = "Queens") 
+
+queens_first_bind <- bind_rows(queens_results_1950, queens_results_1960)
+
+queens_first_bind
+
+```
+
+```{r queens-1970-regressions}
+
+final_join_queens_1970 <- inner_join(x = tables_combined_1970, y = RaceData1970, 
+                         by = c("GISJOIN", "STATE", "COUNTYA")) %>%
+  filter(COUNTYA == "81") %>%
+  mutate(TotalPop = White + Black + OtherNonWhite, 
+         WhitePct = White/TotalPop*100, 
+         NonWhitePct = (Black + OtherNonWhite)/TotalPop*100)
+
+final_join_queens_1970
+
+queens_results_1970 <- lm(data = final_join_queens_1970, MedianHousingValue1970 ~ MedianIncome1970 * NonWhitePct) %>%
+  tidy(conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  slice(4) %>%
+  mutate(year = 1970, borough = "Queens") 
+
+queens_second_bind <- bind_rows(queens_first_bind, queens_results_1970)
+
+queens_second_bind
+
+```
+
+```{r queens-1980-regressions}
+
+final_join_queens_1980 <- inner_join(x = tables_combined_1980, y = RaceData1980, 
+                         by = c("GISJOIN", "STATE", "COUNTYA")) %>%
+  filter(COUNTYA == "81") %>%
+  mutate(TotalPop = sum(White + Black + AmericanIndian + Eskimo + Aleut + Japanese + Chinese + Filipino + Korean + 
+                          AsianIndian + Vietnamese + Hawaiian + Guamanian + Samoan + Other), 
+         WhitePct = White/TotalPop*100, 
+         NonWhitePct = (Black + AmericanIndian + Eskimo + Aleut + Japanese + Chinese + Filipino + Korean + 
+                          AsianIndian + Vietnamese + Hawaiian + Guamanian + Samoan + Other)/TotalPop*100) %>%
+  select(GISJOIN, STATE, COUNTYA, MedianHHIncome1979, MedianHousingValue1980, TotalPop, WhitePct, NonWhitePct)
+
+final_join_queens_1980
+
+queens_results_1980 <- lm(data = final_join_queens_1980, MedianHousingValue1980 ~ MedianHHIncome1979 * NonWhitePct) %>%
+  tidy(conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  slice(4) %>%
+  mutate(year = 1980, borough = "Queens") 
+
+queens_third_bind <- bind_rows(queens_second_bind, queens_results_1980)
+
+queens_third_bind
+
+```
+
+```{r queens-1990-regressions}
+
+final_join_queens_1990 <- inner_join(x = tables_combined_1990, y = RaceData1990, 
+                         by = c("GISJOIN", "STATE", "COUNTYA")) %>%
+  filter(COUNTYA == "81") %>%
+  mutate(TotalPop = White + Black + AmericanNativeIndian + AsianPacificIslander + 
+          Other, 
+         WhitePct = White/TotalPop*100, 
+         NonWhitePct = (Black + AmericanNativeIndian + AsianPacificIslander + 
+          Other)/TotalPop*100)
+
+final_join_queens_1990
+
+queens_results_1990 <- lm(data = final_join_queens_1990, MedianHousingValue1990 ~ MedianHHIncome1989 * NonWhitePct) %>%
+  tidy(conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  slice(4) %>%
+  mutate(year = 1990, borough = "Queens") 
+
+queens_fourth_bind <- bind_rows(queens_third_bind, queens_results_1990)
+
+queens_fourth_bind
+
+```
+
+```{r queens-2000-regressions}
+
+final_join_queens_2000 <- inner_join(x = tables_combined_2000, y = RaceData2000, 
+                         by = c("GISJOIN", "STATE", "COUNTYA")) %>%
+  filter(COUNTYA == "81") %>%
+  mutate(TotalPop = White + Black + AmericanNativeIndian + Asian + 
+           HawaiianPacificIslander + Other + TwoOrMore, 
+         WhitePct = White/TotalPop*100, 
+         NonWhitePct = (Black + AmericanNativeIndian + Asian + 
+           HawaiianPacificIslander + Other + TwoOrMore)/TotalPop*100)
+
+final_join_queens_2000
+
+queens_results_2000 <- lm(data = final_join_queens_2000, MedianHousingValue2000 ~ MedianHHIncome1999 * NonWhitePct) %>%
+  tidy(conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  slice(4) %>%
+  mutate(year = 2000, borough = "Queens") 
+
+queens_fifth_bind <- bind_rows(queens_fourth_bind, queens_results_2000)
+
+queens_fifth_bind
+
+
+```
+
+```{r queens-2010-regressions}
+
+final_join_queens_2010 <- inner_join(x = tables_combined_2010, y = RaceData2010, 
+                         by = c("GISJOIN", "STATE", "COUNTYA")) %>%
+  filter(COUNTYA == "81") %>%
+  mutate(TotalPop = Total, 
+         WhitePct = White/TotalPop*100, 
+         NonWhitePct = (Black + AmericanNativeIndian + Asian + 
+           HawaiianPacificIslander + Other + TwoOrMore)/TotalPop*100)
+
+final_join_queens_2010
+
+queens_results_2010 <- lm(data = final_join_queens_2010, MedianHousingValue2010 ~ MedianHHIncome2010 * NonWhitePct) %>%
+  tidy(conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  slice(4) %>%
+  mutate(year = 2010, borough = "Queens") 
+
+queens_final_bind <- bind_rows(queens_fifth_bind, queens_results_2010)
+
+queens_final_bind
+
+
+queens_regressions <- queens_final_bind %>%
+            
+  ggplot(aes(x = year, y = estimate)) +
+  geom_point(color = "red") + 
+  labs(x = "Year", y = "Estimate",
+       title = "How Does the Interaction of Median Household Income \nand Race Affect Housing Value in Queens?",
+       subtitle = "Running a Linear Regression, Using Median Housing Value, \nwith an Interaction Between Median Household Income and Race.",
+       caption = "Data from IPUMS National Historical Geographic Information System") +
+  
+  # Adding line to make it easier to read
+  
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_errorbar(aes(x = year, ymin = conf.low, 
+                    ymax = conf.high), color = "blue") +
+  theme_classic() +
+  scale_x_continuous(breaks = c(1950, 1960, 1970, 1980, 1990, 2000, 2010)) 
+    
+            
+queens_regressions
+            
+write_rds(queens_regressions, "shiny/regression_data/Queens/queens_graph.rds")
 
 ```
 

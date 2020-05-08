@@ -23,6 +23,7 @@ library(gganimate)
 library(spdplyr)
 library(rmapshaper)
 library(broom)
+library(shinythemes)
 
 nymanhattan1937 <- read_rds("redlining_maps/manhattan/nymanhattan1937.rds")
 nybronx1938 <- read_rds("redlining_maps/bronx/nybronx1938.rds")
