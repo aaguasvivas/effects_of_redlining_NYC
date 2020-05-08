@@ -152,7 +152,7 @@ tabPanel("Change in Demographics Over Time",
                 h3("Trends:"),
                 h4("- For every borough, except for Staten Island, we see a steep decline in the White population after the years 1940 and 1950. This is almost immediately after redlining starts to take place. This is known as 'White Flight'. 'White Flight' is the mass migration of White people, usually from urban areas to more suburban cities/towns, based mostly on the fact that these urban areas are becoming more racially and ethnoculturally diverse. Racial, Ethnic and Religious minorities were often denied housing and business loans, as the Underwriting Manual of the Federal Housing Administration, said that 'incompatible racial groups should not be permitted to live in the same communities'. With this mass migration, White people have the ability to acquire wealth by investing in housing and business, effectively taking these resources and capital away from these urban areas, only worsening the wealth gap between them."),
                 h4("- As seen in the plot, from 1940 to 1950, there is this quick spike in the White population in Staten Island, as 'White Flight' begins to happen, with Staten Island being one of the places they move to. The opposite happens in the plots for the other boroughs where we a steep decline in the 'White Population' after the years Redlining begins to happen, with the drop usually occurring between 1940 and 1960, for all of them."),
-                h4("- For places like Queens and Brooklyn, and even Manhattan, you can see that between the years 2000 and 2010, there seems to be an upward spike or a sudden upward change in the White populations, which come as a result of another process, known as 'Gentrification', in which these affluent White residents move back to poor neighborhoods, which a lot of times were affected by redlining and are often populated by people of color. With moving there, a lot of new businesses also move in, and prices for properties begin to go up, pushing those who can't afford the new prices, which are often people of color."))
+                h4("- For places like Queens and Brooklyn, and even Manhattan, you can see that between the years 2000 and 2010, there seems to be an upward spike or a sudden upward change in the White populations, which come as a result of another process, known as 'Gentrification', in which these affluent White residents move back to poor neighborhoods, which a lot of times were affected by redlining and are often populated by people of color. With moving there, a lot of new businesses also move in, and prices for properties begin to go up, pushing those who can't afford the new prices out, which are often people of color."))
 
 ),
 
@@ -184,7 +184,9 @@ tabPanel("Median Household Income",
                              h4("Median Household Income in Staten Island"),
                              leafletOutput("staten_island_household_income_1950"))), 
                 h3("Findings:"),
-                h4("- If we look at ")
+                h4("- If we compare these median household income graphs, to their respective redlining maps, you will see that those areas in 'Red' and 'Yellow' tend to be the poorest areas."),
+                h4("- Places with strict, discriminatory and racist redlining often start at the low end of the spectrum, even ten years after this redlining first started, disproportionately living in poverty. For example, places labeled as 'Dangerous/Hazardous' in Brooklyn, Queens or Manhattan become poorer over time, versus places labeled as 'Green' or another borough like Staten Island where the policy was not as present."),
+                h4("- A good example to see the effect of redlining is to look at the 'Green' area of Manhattan around 'Central Park' in the Manhattan Redlining Map, and look at how the median household income stays up at an Upper Middle Class level, while the area in 'Red' right above it and around it remains at that lower bracket, in terms of median household income, over time, disproportionately living in poverty.")
                 )
          ),
 
@@ -239,19 +241,19 @@ tabPanel("About Me",
          HTML("<center href='https://ibb.co/5vrC2s3'><img src='https://i.ibb.co/GkWGFCD/githubprofile.jpg' alt='githubprofile' width='325' height='400' border='0'></center>"),
          br(),
          h2("About Me"),
-         h5("- Hello everyone! My name is Adelson Aguasvivas. I am a Junior at Harvard College, from the Dominican Republic/New York studying Computer Science, with a secondary in Ethnicity, Migration and Rights. I have a strong passion for software engineering, data science and education, and hope to keep working in these types of projects in future."),
-         h5("- The desire to work on this project came out of personal experiences. Having moved from the Dominican Republic, to live in the Bronx with my grandmother, and having gone to middle school there for a short period of time, before moving to Newburgh, New York, made me wonder why the borough was set up in the way it was. Why was it that so many of my friends and their families seemed to be pushed to the margins of the city, facing poverty and generations of struggle? In the next few years, I would go on to learn about redlining and its effects, seeing the consequences of this racist and discriminatory practice, first hand. I have always wanted to visualize what these redlining maps looked like, and how it affected the five New York City boroughs over time, from 1950 to 2010. This is what I set my goal to be for this project. My hope is that this project will make information about this practice more readily and widely available, as well as provide a visualization tool, to actually see, in a map, the areas affected."),
+         h4("- Hello everyone! My name is Adelson Aguasvivas. I am a Junior at Harvard College, from the Dominican Republic/New York studying Computer Science, with a secondary in Ethnicity, Migration and Rights. I have a strong passion for software engineering, data science and education, and hope to keep working in these types of projects in future."),
+         h4("- The desire to work on this project came out of personal experiences. Having moved from the Dominican Republic, to live in the Bronx with my grandmother, and having gone to middle school there for a short period of time, before moving to Newburgh, New York, made me wonder why the borough was set up in the way it was. Why was it that so many of my friends and their families seemed to be pushed to the margins of the city, facing poverty and generations of struggle? In the next few years, I would go on to learn about redlining and its effects, seeing the consequences of this racist and discriminatory practice, first hand. I have always wanted to visualize what these redlining maps looked like, and how it affected the five New York City boroughs over time, from 1950 to 2010. This is what I set my goal to be for this project. My hope is that this project will make information about this practice more readily and widely available, as well as provide a visualization tool, to actually see, in a map, the areas affected."),
          h2("Contact Information"),
          br(),
-         h5("- Email: aaguasvivas@college.harvard.edu"),
+         h4("- Email: aaguasvivas@college.harvard.edu"),
          br(),
-         h5("- Connect with me on LinkedIn here: ", 
+         h4("- Connect with me on LinkedIn here: ", 
             a("https://www.linkedin.com/in/aaguasvivas/", href="https://www.linkedin.com/in/aaguasvivas/")),
          br(),
-         h5("- Checkout my Github Profile: ", 
+         h4("- Checkout my Github Profile: ", 
             a("https://github.com/aaguasvivas", href="https://github.com/aaguasvivas")),
          br(),
-         h5("- To directly access the Github Repo, click here: ", 
+         h4("- To directly access the Github Repo, click here: ", 
             a(" https://github.com/aaguasvivas/effects_of_redlining_NYC", href="https://github.com/aaguasvivas/effects_of_redlining_NYC")),
          br())
             
