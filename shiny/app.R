@@ -108,7 +108,7 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
     navbarPage("Effects of Redlining in NYC", 
               
 tabPanel("Redlining Maps",
-         column(7,
+         column(10,
            tabsetPanel(
                tabPanel("Manhattan", 
                         h4("Redlining in Manhattan 1937"),
@@ -131,7 +131,10 @@ tabPanel("Redlining Maps",
                         br(),
                         leafletOutput("nystatenisland1940"))),
            h3("Things to Point Out:"),
-           h4("- More less redlining")
+           h4("- Meaning of the different colors: 'Green' means 'Best', 'Blue' means 'Still Desirable', 'Yellow' means 'Definitely Declining', 'Red' means 'Dangerous/Hazardous'."),
+           h4("- Communities of color, with increasing or high percentages of Black and Latinx populations are way more likely to be labeled as 'Definitely Declining' or 'Dangerous/Hazardous'."), 
+           h4("- Most boroughs experience strong, discriminatory and racist forms of redlining, except for Staten Island, for which we see an increase in the White population after 1940-1950, as seen in the 'Change in Demographics Tab'. This is because, like many suburbs, Staten Island becomes one of the main destinations to move to, because as seen in the map, a lot of its territory had properties that were not immediately affected by redlining, compared to places like the Bronx, Queens or Brooklyn, with increasing numbers of Black/Latinx people, which causes most of these boroughs to be labeled in those 'Red' and 'Yellow' colors."),
+           h4("- If we compare these 'Redlining Maps' to other maps, like 'Median Household Income' or 'Median Housing Value', and we focus on the areas that are 'Yellow' or 'Red', you will notice that regardless of how much time passes, in general,  these areas remain the most poor, with the lowest housing value. For example, look at the 'Green' area of Manhattan around 'Central Park', and look at how both the median household income and median housing value stay up at an Upper Middle Class level, while the area in 'Red' right above it and around it remains at that lower bracket, in terms of median household income and housing value, over time, disproportionately living in poverty.")
 )),
 
 
