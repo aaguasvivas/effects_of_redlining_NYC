@@ -198,7 +198,10 @@ tabPanel("Median Housing Value",
                          min = 1950, max = 2010, value = 1950, 
                          step = 10, sep = "", animate = TRUE),
              h4("NOTE:"),
-             h5("- 1970 bad")
+             h5("- There was no Median Housing Value data for Manhattan for the year 1950, so instead I am showing the Median Housing Value for all places in the state of New York where the data was available."),
+             h5("- Overall, there was not as much Median Housing Value data available for the year 1970, compared to other years, as seen in some boroughs where there seems to be a drop in information from 1960 to 1970. However, the data is widely available after 1970, so we are still able to see the change in Median Housing Value over time."),
+             h5("- Just like with the Median Household Income, the Median Housing Value is in US Dollars, but not adjusted for inflation, as time passes, meaning that the values are the actual housing values for the time, but would be different in today's dollars."),
+             h5("- For these Median Housing Values, the values range from 'Poor'/'Cheap' property value, being the lower values, to 'Middle' to 'Upper Middle' Class, being the higher values in the spectrum.")
          ),
          column(7,
                 tabsetPanel(
@@ -219,18 +222,50 @@ tabPanel("Median Housing Value",
                              h4("Median Housing Value in Staten Island"),
                              leafletOutput("staten_island_housing_value_1950"))),
                 h3("Findings:"),
-                h4("- If we look at ")
+                h4("- If we compare these median housing value maps, to their respective redlining maps, and even to the median household income maps, you will see that those areas in 'Red' and 'Yellow' tend to be the areas with the lowest median housing value over time. "),
+                h4("- If we look at the same example of Manhattan mentioned in the Median Household Income tab, we see that the 'Green' area of Manhattan around 'Central Park' in the Manhattan Redlining Map, has an incredibly high housing value, staying up at an Upper Middle Class level, and reaching over one million dollars in 2010, while the area in 'Red' right above it and around it remains at that lower bracket, in terms of median housing value, over time, disproportionately keeping those affected by redlining from acquiring wealth, still at under two-hundred thousand dollars in 2010. "),
+                h4("- The 'Green' area around 'Central Park' is where a lot of affluent people in the finance sector, and other wealthy careers tend to live today due to its proximity to Times Square and all major business jobs, versus areas that were redlined and still have low housing value today tend to be communities of color, living in places like Harlem or Washington Heights, which are places known for their high percentage of Black and Latinx residents.")
                 )
          ),
 
 
-tabPanel("Predictions and Findings"
+tabPanel("Predictions and Findings",
+         sidebarPanel(
+             sliderInput("year_regressions", "Year:",  
+                         min = 1950, max = 2010, value = 1950, 
+                         step = 10, sep = "", animate = TRUE),
+         ),
+         column(7,
+                tabsetPanel(
+                    tabPanel("Manhattan", 
+                             ),
+                    tabPanel("Bronx", 
+                             ),
+                    tabPanel("Brooklyn", 
+                             ),
+                    tabPanel("Queens", 
+                             ),
+                    tabPanel("Staten Island", 
+                             )),
+         )
          
 ),
 
 
 
-tabPanel("Background Information"
+tabPanel("Background Information",
+         column(8,
+             h2("Background Information"),
+             h4("- Redlining"),
+             h3("Sources Used: "),
+             h4("- Source"),
+             br(),
+             h4("- I would like to thank Preceptor (Dr. David Kane), Mitchell Kilborn and Shivani Aggarwal for all of their guidance and advice in making this project possible! *Chef's Kiss*!")),
+         column(4,
+                HTML("<a href='https://ibb.co/5vrC2s3'><img src='https://i.ibb.co/5YGqQKc/brooklynredlining.jpg' alt='brooklyn_redlining' width='325' height='400' border='0'></a>"),
+                br(),
+                br(),
+                HTML("<a href='https://ibb.co/5vrC2s3'><img src='https://i.ibb.co/02K7CwK/nyredliningpic.jpg' alt='ny_redlining' width='325' height='400' border='0'></a>"))
          
 
 ),
@@ -238,10 +273,10 @@ tabPanel("Background Information"
 
 
 tabPanel("About Me",
-         HTML("<center href='https://ibb.co/5vrC2s3'><img src='https://i.ibb.co/GkWGFCD/githubprofile.jpg' alt='githubprofile' width='325' height='400' border='0'></center>"),
+         HTML("<center href='https://ibb.co/5vrC2s3'><img src='https://i.ibb.co/PxC5sjg/githubprofile.jpg' alt='githubprofile' width='325' height='400' border='0'></center>"),
          br(),
          h2("About Me"),
-         h4("- Hello everyone! My name is Adelson Aguasvivas. I am a Junior at Harvard College, from the Dominican Republic/New York studying Computer Science, with a secondary in Ethnicity, Migration and Rights. I have a strong passion for software engineering, data science and education, and hope to keep working in these types of projects in future."),
+         h4("- Hello everyone! My name is Adelson Aguasvivas. I am a Junior at Harvard College, from the Dominican Republic/Newburgh, New York studying Computer Science, with a secondary in Ethnicity, Migration and Rights. I have a strong passion for software engineering, data science and education, and hope to keep working in these types of projects in the future."),
          h4("- The desire to work on this project came out of personal experiences. Having moved from the Dominican Republic, to live in the Bronx with my grandmother, and having gone to middle school there for a short period of time, before moving to Newburgh, New York, made me wonder why the borough was set up in the way it was. Why was it that so many of my friends and their families seemed to be pushed to the margins of the city, facing poverty and generations of struggle? In the next few years, I would go on to learn about redlining and its effects, seeing the consequences of this racist and discriminatory practice, first hand. I have always wanted to visualize what these redlining maps looked like, and how it affected the five New York City boroughs over time, from 1950 to 2010. This is what I set my goal to be for this project. My hope is that this project will make information about this practice more readily and widely available, as well as provide a visualization tool, to actually see, in a map, the areas affected."),
          h2("Contact Information"),
          br(),
