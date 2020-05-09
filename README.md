@@ -5,26 +5,28 @@ Shiny App found [HERE](https://adelson-aguasvivas.shinyapps.io/effects_of_redlin
 
 ## Project Rationale
 
-HCMST 2017 is intriguing as one of the few datasets from a comprehensive, representative survey of U.S. literate couples.
-
-Though the first "How Couples Meet and Stay Together" survey was conducted by Rosenfeld and his colleagues in 2009, this represents a completely new sample of individuals. The data was collected between July 13 and August 1, 2017, and just released in October of 2018.
-
-How individuals find a partner is a subject of near universal interest - particularly to a young college student witnessing committed relationships, hookups, and everything in between.
-
-With my visualizations, I sought to answer questions related to the different ways in which couples meet.
+The desire to work on this project came out of personal experiences. Having moved from the Dominican Republic, to live in the Bronx with my grandmother, and having gone to middle school there for a short period of time, before moving to Newburgh, New York, made me wonder why the borough was set up in the way it was. Why was it that so many of my friends and their families seemed to be pushed to the margins of the city, facing poverty and generations of struggle? In the next few years, I would go on to learn about redlining and its effects, seeing the consequences of this racist and discriminatory practice, first hand. I have always wanted to visualize what these redlining maps looked like, and how it affected the five New York City boroughs over time, from 1950 to 2010. This is what I set my goal to be for this project. My hope is that this project will make information about this practice more readily and widely available, as well as provide a visualization tool, to actually see, in a map, the areas affected.
 
 ## Repo Guide
 
-- /how_couples_meet : folder containing Shiny App files
+- /past_project_work : folder containing past rough drafts of content added to the website from different brainstorming sessions
 
-- /initial_static_graphic : contains Rmd and html output of some early static graphics
+- /raw-data : folder containing all of the csv and shapefiles used to come up with all graphs and maps
 
-- /past_project_critiques : contains analysis of other Shiny Apps, done as part of the early brainstorming process
+- /shiny : folder containing the shiny app code, as well as all of the data that was put on it
 
-- .gitignore
+- .gitattributes : file containing git attributes for git large files
 
-- HCMST 2017 fresh sample : data in .dta format
+- .gitignore : file containing list of files to ignore when committing and pushing
 
 - README.md
 
-- how_couples_meet_data.R : R script that reads the .dta file and creates necessary RDS files read in by the Shiny App
+- change_over_time.Rmd : Rmd file containing all of the code used to create the change over time plots using ggplot2 and gganimate
+
+- household_income.Rmd : Rmd file containing all of the code used to create the median household income maps for all boroughs
+
+- housing_value.Rmd : Rmd file containing all of the code used to create the median housing value maps for all boroughs
+
+- redlining_maps.Rmd : Rmd file containing all of the code used to create the redlining maps for all boroughs
+
+- regressions.Rmd : Rmd file containing all of the code used to create the regression plots for all boroughs
