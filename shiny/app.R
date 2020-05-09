@@ -266,7 +266,10 @@ tabPanel("Predictions and Findings",
          ),
          column(4,
                 h3("Findings:"),
-                h4("We see that"))
+                h4("Note: There was't any data about the intersection of race, median household income and median housing value for Manhattan in 1950. For some estimates, the confidence intervals are very larger, which means we are less sure about the true estimate given the data collected."),
+                h4("- A negative coefficient/estimate indicates that as the predictor variable increases, the response variable decreases."),
+                h4("- The predictor variables are the interaction between Median Household Income and Race, as the percentage of Non-White People living in an area. The response variable is the Median Housing Value."),
+                h4("- The coefficient for the interaction between Median Household Income and Non-White Percentage would be interpreted as the effect of your median household income and not being white, meaning the associated effect of one variable depends on the value of another variable, since they interact with each other, so as we increase these coefficients in their interaction by 1 unit, holding constant the value of all other values, having a negative effect, would mean that your housing value goes down depending on your median household income and not being white, in general. "))
          
 ),
 
