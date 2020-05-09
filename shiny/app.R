@@ -112,7 +112,10 @@ staten_island_housing_value_2000 <- read_rds("housing_value/staten_island/2000/h
 staten_island_housing_value_2010 <- read_rds("housing_value/staten_island/2010/housing_value_2010.rds")
 
 bronx_graph <- read_rds("regression_data/Bronx/bronx_graph.rds")
-manhattan_graph <- read_rds ("regression_data/Manhattan/manhattan_graph.rds")
+manhattan_graph <- read_rds("regression_data/Manhattan/manhattan_graph.rds")
+queens_graph <- read_rds("regression_data/Queens/queens_graph.rds")
+brooklyn_graph <- read_rds("regression_data/Brooklyn/brooklyn_graph.rds")
+staten_island_graph <- read_rds("regression_data/Staten_Island/staten_island_graph.rds")
 
 
 # Define UI for application, we ask to display the image dist_plot as output.
@@ -251,11 +254,14 @@ tabPanel("Predictions and Findings",
                     tabPanel("Bronx",
                              plotOutput("bronx_graph_output", width = 850, height = 600)
                              ),
-                    tabPanel("Brooklyn", 
+                    tabPanel("Brooklyn",
+                             plotOutput("brooklyn_graph_output", width = 850, height = 600)
                              ),
                     tabPanel("Queens", 
+                             plotOutput("queens_graph_output", width = 850, height = 600)
                              ),
                     tabPanel("Staten Island", 
+                             plotOutput("staten_island_graph_output", width = 850, height = 600)
                              )),
          ),
          column(4,
@@ -830,6 +836,18 @@ server <- function(input, output) {
     
     output$manhattan_graph_output <- renderPlot({
         manhattan_graph 
+    })
+    
+    output$queens_graph_output <- renderPlot({
+        queens_graph 
+    })
+    
+    output$brooklyn_graph_output <- renderPlot({
+        brooklyn_graph 
+    })
+    
+    output$staten_island_graph_output <- renderPlot({
+        staten_island_graph 
     })
     
 }
